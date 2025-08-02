@@ -10,7 +10,7 @@ const Experience = () => {
       title: "Founder & Full Stack Developer",
       company: "Weza Production",
       period: "Present",
-      location: "Free Lance",
+      location: "FreeLance",
       description: [
         "Founded and currently leading Weza Production – a creative media company specializing in video production, branding, and platform hosting",
         "Developed and deployed the company’s full-stack web platform using Laravel and React",
