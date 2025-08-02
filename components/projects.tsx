@@ -140,11 +140,11 @@ const Projects = () => {
       icon: <Leaf className="w-6 h-6" />,
       color: "from-green-600 to-lime-500",
       images: [
-        "/img/agritechz/Home1.png",
-        "/img/agritechz/About1.png",
-        "/img/agritechz/Services1.png",
-        "/img/agritechz/Gallery1.png",
-        "/img/agritechz/Control-Panel1.png",
+        "/img/agri-img/Home1.png",
+        "/img/agri-img/About1.png",
+        "/img/agri-img/Services1.png",
+        "/img/agri-img/Gallery1.png",
+        "/img/agri-img/Control-Panel1.png",
 
       ],
       demoUrl: "https://agritechz-tech.vercel.app/",
