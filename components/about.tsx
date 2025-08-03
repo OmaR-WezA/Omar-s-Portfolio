@@ -8,7 +8,7 @@ const About = () => {
   const highlights = [
     {
       icon: <Code className="w-6 h-6" />,
-      title: "Full Stack Mastery",
+      title: "Full Stack Developer",
       description: "Expert in modern web technologies, from frontend React to backend Laravel and Python",
       color: "from-blue-500 to-cyan-500",
     },
@@ -72,7 +72,7 @@ const About = () => {
           >
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p className="text-lg">
-                I'm a <span className="text-primary font-semibold">Full Stack Developer</span> and{" "}
+                I'm a <span className="text-primary font-semibold">Full Stack Web Developer</span> and{" "}
                 <span className="text-primary font-semibold">Creative Entrepreneur</span> with a passion for building
                 innovative digital solutions that make a real impact. Currently serving as IT Technical Support Team
                 Lead at the Ministry of Youth and Sports, where I lead technical teams in developing organizational
