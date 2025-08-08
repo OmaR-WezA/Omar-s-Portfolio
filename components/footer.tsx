@@ -14,7 +14,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           {/* Brand */}
           <div>
-            <h3 className="text-2xl font-bold text-primary mb-4">Omar Fahem</h3>
+            <h3 className="text-2xl font-bold text-primary mb-4">Omar Mohamed Fahem</h3>
             <p className="text-muted-foreground leading-relaxed">
               Full Stack Web Developer & Video Editor passionate about creating innovative solutions that make a difference.
             </p>
