@@ -41,7 +41,7 @@ const Education = () => {
                       <h3 className="text-2xl font-bold text-primary mb-2 md:mb-0">Borg Al Arab Technological University</h3>
                       <div className="flex items-center text-muted-foreground">
                         <Calendar className="w-4 h-4 mr-2" />
-                        Graduated: 2028
+                        Expected Graduation: 2028
                       </div>
                     </div>
 
