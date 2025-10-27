@@ -217,11 +217,49 @@ const Projects = () => {
       githubUrl: "#",
       status: "Planned",
     },
-
+    {
+      id: 7,
+      title: "Weza WhatsApp Sender",
+      category: "GUI Application",
+      description: "Automated WhatsApp messaging tool with Excel import, message templates, and delivery tracking.",
+      longDescription:
+        "Weza WhatsApp Sender is a powerful automation tool designed to simplify bulk WhatsApp messaging. It allows users to import contact lists directly from Excel, create and manage message templates, and track delivery reports. With its clean UI and robust backend automation, Weza streamlines marketing and communication workflows for businesses and professionals. It supports scheduling, multi-device setup, and message customization for efficient communication at scale.",
+      technologies: ["Python", "Tkinter", "Selenium", "Pandas", "Excel Integration", "React.js", "Firebase"],
+      layoutSections: [
+        "Main Dashboard",
+        "Message Templates",
+        "Excel Import",
+        "Delivery Tracking",
+        "Settings",
+        "Login",
+        "Dashboard"
+      ],
+      features: [
+        "Automated WhatsApp message sending",
+        "Import contacts from Excel files",
+        "Create and reuse message templates",
+        "Real-time delivery tracking and logging",
+        "Supports multiple devices and sessions",
+        "Scheduling and delay customization",
+        "User-friendly interface with error handling",
+        "Comes with an integrated Admin Dashboard for management and analytics."
+      ],
+      icon: "img/icon/icon.ico",
+      color: "from-green-500 to-teal-500",
+      images: [
+        "/img/WhatsApp-Weza-Sender/image.png",
+        "/img/WhatsApp-Weza-Sender/image-1.png",
+        "/img/WhatsApp-Weza-Sender/image-2.png",
+        "/img/WhatsApp-Weza-Sender/icon.png",
+      ],
+      demoUrl: "https://omarportfolios.vercel.app/apps/weza-whatsapp-sender",
+      githubUrl: "",
+      status: "Completed",
+    },
 
   ]
 
-  const categories = ["All", "Web Development", "Web Application", "Web Platform", "AI Innovation"]
+  const categories = ["All", "Web Development", "Web Application", "Web Platform", "AI Innovation", "GUI Application"]
   const [activeCategory, setActiveCategory] = useState("All")
 
   const filteredProjects =
@@ -345,7 +383,11 @@ const Projects = () => {
                         className={`w-10 h-10 rounded-lg bg-gradient-to-r ${project.color} flex items-center justify-center text-white mr-3`}
                         whileHover={{ scale: 1.1, rotate: 5 }}
                       >
-                        {project.icon}
+                        {typeof project.icon === "string" && project.icon.match(/\.(png|jpg|jpeg|ico|svg)$/i) ? (
+                          <img src={project.icon} alt={project.title} className="w-6 h-6 object-contain" />
+                        ) : (
+                          project.icon
+                        )}
                       </motion.div>
                       <span className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
                         {project.category}
@@ -395,7 +437,11 @@ const Projects = () => {
                     <div
                       className={`w-12 h-12 rounded-lg bg-gradient-to-r ${selectedProject.color} flex items-center justify-center text-white`}
                     >
-                      {selectedProject.icon}
+                      {typeof selectedProject.icon === "string" && selectedProject.icon.match(/\.(png|jpg|jpeg|ico|svg)$/i) ? (
+                        <img src={selectedProject.icon} alt={selectedProject.title} className="w-8 h-8 object-contain" />
+                      ) : (
+                        selectedProject.icon
+                      )}
                     </div>
                     {selectedProject.title}
                   </DialogTitle>

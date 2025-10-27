@@ -38,6 +38,49 @@ const Education = () => {
 
                   <div className="flex-1">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                      <h3 className="text-2xl font-bold text-primary mb-2 md:mb-0">Borg Al Arab Technological University</h3>
+                      <div className="flex items-center text-muted-foreground">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Graduated: 2028
+                      </div>
+                    </div>
+
+                    <div className="mb-4">
+                      <span className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                        Faculty of Industrial and Energy Technology
+                      </span>
+                    </div>
+
+                    <p className="text-muted-foreground leading-relaxed">
+                      Specializing in the Information Technology Program with a focus on modern software development practices,
+                      system administration, and emerging technologies.
+                      The program combines theoretical knowledge with hands-on practical experience in real-world IT environments,
+                      including Programmin, Networking, Cybersecurity, and Internet of Things (IoT) technologies.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+          <br />
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <Card className="hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-6">
+                  <motion.div
+                    className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary flex-shrink-0"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                  >
+                    <GraduationCap className="w-8 h-8" />
+                  </motion.div>
+
+                  <div className="flex-1">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
                       <h3 className="text-2xl font-bold text-primary mb-2 md:mb-0">WE Applied Technology School</h3>
                       <div className="flex items-center text-muted-foreground">
                         <Calendar className="w-4 h-4 mr-2" />
