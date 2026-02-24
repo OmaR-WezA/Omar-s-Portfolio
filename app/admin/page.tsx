@@ -1,0 +1,707 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import { Key, Save, User, Info, Briefcase, Rocket, LogOut, Loader2, Plus, Trash2, ChevronRight, ChevronLeft } from "lucide-react"
+import { toast } from "react-hot-toast"
+import { updatePortfolioData } from "@/lib/actions/portfolio"
+import initialData from "@/data/portfolio-data.json"
+import { PortfolioData } from "@/types/portfolio"
+
+// Basic auth (Client-side for demo, will check env on server)
+const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123"
+
+export default function AdminDashboard() {
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const [password, setPassword] = useState("")
+    const [isSaving, setIsSaving] = useState(false)
+    const [data, setData] = useState<PortfolioData>(initialData as PortfolioData)
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault()
+        if (password === ADMIN_PASSWORD) {
+            setIsAuthenticated(true)
+            toast.success("Welcome, Omar!")
+        } else {
+            toast.error("Invalid password")
+        }
+    }
+
+    const handleSave = async () => {
+        setIsSaving(true)
+        try {
+            const result = await updatePortfolioData(data)
+            if (result.success) {
+                toast.success("Portfolio updated successfully!")
+            } else {
+                toast.error("Failed to update: " + result.error)
+            }
+        } catch (error) {
+            toast.error("An error occurred")
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
+    if (!isAuthenticated) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="w-full max-w-md"
+                >
+                    <Card className="border-zinc-800 bg-zinc-900 shadow-2xl">
+                        <CardHeader className="text-center space-y-1">
+                            <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                                <Key className="w-6 h-6 text-primary" />
+                            </div>
+                            <CardTitle className="text-2xl font-bold text-white">Admin Access</CardTitle>
+                            <CardDescription className="text-zinc-400">
+                                Enter your password to manage your portfolio.
+                            </CardDescription>
+                        </CardHeader>
+                        <form onSubmit={handleLogin}>
+                            <CardContent className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="password">Password</Label>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        placeholder="••••••••"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
+                                        autoFocus
+                                    />
+                                </div>
+                            </CardContent>
+                            <CardFooter>
+                                <Button type="submit" className="w-full group">
+                                    Login
+                                    <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                </Button>
+                            </CardFooter>
+                        </form>
+                    </Card>
+                </motion.div>
+            </div>
+        )
+    }
+
+    return (
+        <div className="min-h-screen bg-zinc-950 text-white pb-20">
+            {/* Navbar */}
+            <header className="sticky top-0 z-50 w-full border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md">
+                <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                            <Rocket className="w-5 h-5 text-white" />
+                        </div>
+                        <span className="font-bold text-xl tracking-tight">PortfoliEditor</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="border-zinc-800 hover:bg-zinc-900"
+                            onClick={() => setIsAuthenticated(false)}
+                        >
+                            <LogOut className="w-4 h-4 mr-2" />
+                            Sign Out
+                        </Button>
+                        <Button size="sm" onClick={handleSave} disabled={isSaving}>
+                            {isSaving ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    Saving...
+                                </>
+                            ) : (
+                                <>
+                                    <Save className="w-4 h-4 mr-2" />
+                                    Save Changes
+                                </>
+                            )}
+                        </Button>
+                    </div>
+                </div>
+            </header>
+
+            <main className="container mx-auto px-4 mt-8">
+                <div className="max-w-5xl mx-auto">
+                    <Tabs defaultValue="hero" className="space-y-8">
+                        <TabsList className="grid grid-cols-4 bg-zinc-900 border border-zinc-800 p-1 rounded-xl">
+                            <TabsTrigger value="hero" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white">
+                                <User className="w-4 h-4 mr-2" />
+                                Hero
+                            </TabsTrigger>
+                            <TabsTrigger value="about" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white">
+                                <Info className="w-4 h-4 mr-2" />
+                                About
+                            </TabsTrigger>
+                            <TabsTrigger value="experience" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white">
+                                <Briefcase className="w-4 h-4 mr-2" />
+                                Exp
+                            </TabsTrigger>
+                            <TabsTrigger value="projects" className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white">
+                                <Rocket className="w-4 h-4 mr-2" />
+                                Work
+                            </TabsTrigger>
+                        </TabsList>
+
+                        <AnimatePresence mode="wait">
+                            {/* HERO SECTION */}
+                            <TabsContent value="hero">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="space-y-6"
+                                >
+                                    <Card className="border-zinc-800 bg-zinc-900 shadow-xl overflow-hidden">
+                                        <div className="h-2 w-full bg-gradient-to-r from-primary to-secondary" />
+                                        <CardHeader>
+                                            <CardTitle>Hero Section</CardTitle>
+                                            <CardDescription>Manage your name, roles, and introduction.</CardDescription>
+                                        </CardHeader>
+                                        <CardContent className="space-y-6">
+                                            <div className="grid md:grid-cols-2 gap-6">
+                                                <div className="space-y-2">
+                                                    <Label>Display Name</Label>
+                                                    <Input
+                                                        value={data.hero.name}
+                                                        onChange={(e) => setData({ ...data, hero: { ...data.hero, name: e.target.value } })}
+                                                        className="bg-zinc-800 border-zinc-700"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label>Short Description</Label>
+                                                <Textarea
+                                                    value={data.hero.description}
+                                                    onChange={(e) => setData({ ...data, hero: { ...data.hero, description: e.target.value } })}
+                                                    className="bg-zinc-800 border-zinc-700 min-h-[100px]"
+                                                />
+                                            </div>
+
+                                            <div className="space-y-4">
+                                                <div className="flex items-center justify-between">
+                                                    <Label className="text-lg font-semibold">Roles</Label>
+                                                    <Button
+                                                        variant="secondary"
+                                                        size="sm"
+                                                        onClick={() => {
+                                                            const newRoles = [...data.hero.roles, "New Role"]
+                                                            setData({ ...data, hero: { ...data.hero, roles: newRoles } })
+                                                        }}
+                                                    >
+                                                        <Plus className="w-4 h-4 mr-2" /> Add Role
+                                                    </Button>
+                                                </div>
+                                                <div className="grid gap-3">
+                                                    {data.hero.roles.map((role, idx) => (
+                                                        <div key={idx} className="flex gap-2">
+                                                            <Input
+                                                                value={role}
+                                                                onChange={(e) => {
+                                                                    const newRoles = [...data.hero.roles]
+                                                                    newRoles[idx] = e.target.value
+                                                                    setData({ ...data, hero: { ...data.hero, roles: newRoles } })
+                                                                }}
+                                                                className="bg-zinc-800 border-zinc-700"
+                                                            />
+                                                            <Button
+                                                                variant="destructive"
+                                                                size="icon"
+                                                                onClick={() => {
+                                                                    const newRoles = data.hero.roles.filter((_, i) => i !== idx)
+                                                                    setData({ ...data, hero: { ...data.hero, roles: newRoles } })
+                                                                }}
+                                                            >
+                                                                <Trash2 className="w-4 h-4" />
+                                                            </Button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            <div className="space-y-4 pt-4 border-t border-zinc-800">
+                                                <div className="flex items-center justify-between">
+                                                    <Label className="text-lg font-semibold">Social Links</Label>
+                                                    <Button
+                                                        variant="secondary"
+                                                        size="sm"
+                                                        onClick={() => {
+                                                            const newLinks = [...data.hero.socialLinks, { label: "New", href: "#", icon: "Link" }]
+                                                            setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
+                                                        }}
+                                                    >
+                                                        <Plus className="w-4 h-4 mr-2" /> Add Link
+                                                    </Button>
+                                                </div>
+                                                <div className="grid gap-4">
+                                                    {data.hero.socialLinks.map((link, idx) => (
+                                                        <div key={idx} className="grid grid-cols-3 gap-2 items-end p-4 bg-zinc-800/50 rounded-lg border border-zinc-800">
+                                                            <div className="space-y-2">
+                                                                <Label className="text-xs">Label</Label>
+                                                                <Input
+                                                                    value={link.label}
+                                                                    onChange={(e) => {
+                                                                        const newLinks = [...data.hero.socialLinks]
+                                                                        newLinks[idx].label = e.target.value
+                                                                        setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
+                                                                    }}
+                                                                    className="bg-zinc-800 border-zinc-700"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-2">
+                                                                <Label className="text-xs">Href</Label>
+                                                                <Input
+                                                                    value={link.href}
+                                                                    onChange={(e) => {
+                                                                        const newLinks = [...data.hero.socialLinks]
+                                                                        newLinks[idx].href = e.target.value
+                                                                        setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
+                                                                    }}
+                                                                    className="bg-zinc-800 border-zinc-700"
+                                                                />
+                                                            </div>
+                                                            <div className="flex gap-2">
+                                                                <div className="flex-grow">
+                                                                    <Label className="text-xs">Icon</Label>
+                                                                    <Input
+                                                                        value={link.icon}
+                                                                        onChange={(e) => {
+                                                                            const newLinks = [...data.hero.socialLinks]
+                                                                            newLinks[idx].icon = e.target.value
+                                                                            setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
+                                                                        }}
+                                                                        className="bg-zinc-800 border-zinc-700"
+                                                                    />
+                                                                </div>
+                                                                <Button
+                                                                    variant="destructive"
+                                                                    size="icon"
+                                                                    onClick={() => {
+                                                                        const newLinks = data.hero.socialLinks.filter((_, i) => i !== idx)
+                                                                        setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
+                                                                    }}
+                                                                >
+                                                                    <Trash2 className="w-4 h-4" />
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </motion.div>
+                            </TabsContent>
+
+                            {/* EXPERIENCE SECTION */}
+                            <TabsContent value="experience">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="space-y-6"
+                                >
+                                    <div className="flex justify-end">
+                                        <Button
+                                            onClick={() => {
+                                                const newExp = {
+                                                    title: "New Position",
+                                                    company: "Company Name",
+                                                    period: "2024 - Present",
+                                                    location: "Remote",
+                                                    description: ["Did awesome things"],
+                                                    current: true
+                                                }
+                                                setData({ ...data, experience: [newExp, ...data.experience] })
+                                            }}
+                                        >
+                                            <Plus className="w-4 h-4 mr-2" /> Add Experience
+                                        </Button>
+                                    </div>
+
+                                    {data.experience.map((exp, idx) => (
+                                        <Card key={idx} className="border-zinc-800 bg-zinc-900 hover:border-zinc-700 transition-colors">
+                                            <CardHeader className="flex flex-row items-start justify-between">
+                                                <div className="space-y-1">
+                                                    <CardTitle>{exp.title}</CardTitle>
+                                                    <CardDescription>{exp.company} • {exp.period}</CardDescription>
+                                                </div>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="text-zinc-500 hover:text-red-400"
+                                                    onClick={() => {
+                                                        const newExp = data.experience.filter((_, i) => i !== idx)
+                                                        setData({ ...data, experience: newExp })
+                                                    }}
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </CardHeader>
+                                            <CardContent className="space-y-4">
+                                                <div className="grid md:grid-cols-2 gap-4">
+                                                    <div className="space-y-2">
+                                                        <Label>Job Title</Label>
+                                                        <Input
+                                                            value={exp.title}
+                                                            onChange={(e) => {
+                                                                const newExp = [...data.experience]
+                                                                newExp[idx].title = e.target.value
+                                                                setData({ ...data, experience: newExp })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label>Company</Label>
+                                                        <Input
+                                                            value={exp.company}
+                                                            onChange={(e) => {
+                                                                const newExp = [...data.experience]
+                                                                newExp[idx].company = e.target.value
+                                                                setData({ ...data, experience: newExp })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label>Responsibilities (One per line)</Label>
+                                                    <Textarea
+                                                        value={exp.description.join("\n")}
+                                                        onChange={(e) => {
+                                                            const newExp = [...data.experience]
+                                                            newExp[idx].description = e.target.value.split("\n")
+                                                            setData({ ...data, experience: newExp })
+                                                        }}
+                                                        className="bg-zinc-800 border-zinc-700 min-h-[100px]"
+                                                    />
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </motion.div>
+                            </TabsContent>
+
+                            {/* PROJECTS SECTION */}
+                            <TabsContent value="projects">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="space-y-6"
+                                >
+                                    <div className="flex justify-end">
+                                        <Button
+                                            onClick={() => {
+                                                const newProject = {
+                                                    id: Date.now(),
+                                                    title: "New Project",
+                                                    category: "Web Development",
+                                                    description: "Short description",
+                                                    longDescription: "Detailed description",
+                                                    technologies: ["React"],
+                                                    features: ["Responsive design"],
+                                                    icon: "Zap",
+                                                    color: "from-blue-500 to-indigo-600",
+                                                    images: [],
+                                                    demoUrl: "#",
+                                                    githubUrl: "#",
+                                                    status: "In Progress"
+                                                }
+                                                setData({ ...data, projects: [newProject, ...data.projects] })
+                                            }}
+                                        >
+                                            <Plus className="w-4 h-4 mr-2" /> Add Project
+                                        </Button>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {data.projects.map((project, idx) => (
+                                            <Card key={project.id} className="border-zinc-800 bg-zinc-900 overflow-hidden flex flex-col">
+                                                <div className={`h-1.5 w-full bg-gradient-to-r ${project.color}`} />
+                                                <CardHeader>
+                                                    <div className="flex justify-between items-start">
+                                                        <CardTitle className="text-lg">{project.title}</CardTitle>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="text-zinc-500 hover:text-red-400"
+                                                            onClick={() => {
+                                                                const newProjects = data.projects.filter((_, i) => i !== idx)
+                                                                setData({ ...data, projects: newProjects })
+                                                            }}
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </Button>
+                                                    </div>
+                                                    <CardDescription>{project.category}</CardDescription>
+                                                </CardHeader>
+                                                <CardContent className="space-y-4 flex-grow">
+                                                    <div className="space-y-2">
+                                                        <Label>Project Title</Label>
+                                                        <Input
+                                                            value={project.title}
+                                                            onChange={(e) => {
+                                                                const newProj = [...data.projects]
+                                                                newProj[idx].title = e.target.value
+                                                                setData({ ...data, projects: newProj })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700"
+                                                        />
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-3">
+                                                        <div className="space-y-2">
+                                                            <Label>Status</Label>
+                                                            <Input
+                                                                value={project.status}
+                                                                onChange={(e) => {
+                                                                    const newProj = [...data.projects]
+                                                                    newProj[idx].status = e.target.value
+                                                                    setData({ ...data, projects: newProj })
+                                                                }}
+                                                                className="bg-zinc-800 border-zinc-700"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label>Icon (Lucide name)</Label>
+                                                            <Input
+                                                                value={project.icon}
+                                                                onChange={(e) => {
+                                                                    const newProj = [...data.projects]
+                                                                    newProj[idx].icon = e.target.value
+                                                                    setData({ ...data, projects: newProj })
+                                                                }}
+                                                                className="bg-zinc-800 border-zinc-700"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label>Technologies (One per line)</Label>
+                                                        <Textarea
+                                                            value={project.technologies.join("\n")}
+                                                            onChange={(e) => {
+                                                                const newProj = [...data.projects]
+                                                                newProj[idx].technologies = e.target.value.split("\n")
+                                                                setData({ ...data, projects: newProj })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700 h-20"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label>Features (One per line)</Label>
+                                                        <Textarea
+                                                            value={project.features.join("\n")}
+                                                            onChange={(e) => {
+                                                                const newProj = [...data.projects]
+                                                                newProj[idx].features = e.target.value.split("\n")
+                                                                setData({ ...data, projects: newProj })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700 h-20"
+                                                        />
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-3">
+                                                        <div className="space-y-2">
+                                                            <Label>Demo URL</Label>
+                                                            <Input
+                                                                value={project.demoUrl}
+                                                                onChange={(e) => {
+                                                                    const newProj = [...data.projects]
+                                                                    newProj[idx].demoUrl = e.target.value
+                                                                    setData({ ...data, projects: newProj })
+                                                                }}
+                                                                className="bg-zinc-800 border-zinc-700"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label>GitHub URL</Label>
+                                                            <Input
+                                                                value={project.githubUrl}
+                                                                onChange={(e) => {
+                                                                    const newProj = [...data.projects]
+                                                                    newProj[idx].githubUrl = e.target.value
+                                                                    setData({ ...data, projects: newProj })
+                                                                }}
+                                                                className="bg-zinc-800 border-zinc-700"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label>Images (One per line)</Label>
+                                                        <Textarea
+                                                            value={project.images.join("\n")}
+                                                            onChange={(e) => {
+                                                                const newProj = [...data.projects]
+                                                                newProj[idx].images = e.target.value.split("\n")
+                                                                setData({ ...data, projects: newProj })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700 h-20"
+                                                            placeholder="/img/project-1.png"
+                                                        />
+                                                    </div>
+                                                </CardContent>
+                                                <CardFooter className="pt-0 flex gap-2">
+                                                    <Button variant="secondary" className="flex-grow" size="sm">
+                                                        Edit Links & Images
+                                                    </Button>
+                                                </CardFooter>
+                                            </Card>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            </TabsContent>
+
+                            {/* ABOUT SECTION */}
+                            <TabsContent value="about">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="space-y-6"
+                                >
+                                    <Card className="border-zinc-800 bg-zinc-900 border-b-0 rounded-b-none">
+                                        <CardHeader>
+                                            <CardTitle>Highlights</CardTitle>
+                                            <CardDescription>Major focus areas displayed as cards.</CardDescription>
+                                        </CardHeader>
+                                        <CardContent className="space-y-6">
+                                            <div className="grid gap-4">
+                                                {data.about.highlights.map((h, hIdx) => (
+                                                    <div key={hIdx} className="p-4 bg-zinc-800/30 rounded-lg border border-zinc-800 space-y-4">
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div className="space-y-2">
+                                                                <Label>Title</Label>
+                                                                <Input
+                                                                    value={h.title}
+                                                                    onChange={(e) => {
+                                                                        const newH = [...data.about.highlights]
+                                                                        newH[hIdx].title = e.target.value
+                                                                        setData({ ...data, about: { ...data.about, highlights: newH } })
+                                                                    }}
+                                                                    className="bg-zinc-800 border-zinc-700"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-2">
+                                                                <Label>Icon</Label>
+                                                                <Input
+                                                                    value={h.icon}
+                                                                    onChange={(e) => {
+                                                                        const newH = [...data.about.highlights]
+                                                                        newH[hIdx].icon = e.target.value
+                                                                        setData({ ...data, about: { ...data.about, highlights: newH } })
+                                                                    }}
+                                                                    className="bg-zinc-800 border-zinc-700"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label>Description</Label>
+                                                            <Input
+                                                                value={h.description}
+                                                                onChange={(e) => {
+                                                                    const newH = [...data.about.highlights]
+                                                                    newH[hIdx].description = e.target.value
+                                                                    setData({ ...data, about: { ...data.about, highlights: newH } })
+                                                                }}
+                                                                className="bg-zinc-800 border-zinc-700"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+
+                                    <Card className="border-zinc-800 bg-zinc-900 rounded-none border-b-0">
+                                        <CardHeader>
+                                            <CardTitle>Stats</CardTitle>
+                                            <CardDescription>Numeric achievements and labels.</CardDescription>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                                {data.about.stats.map((stat, sIdx) => (
+                                                    <div key={sIdx} className="p-3 bg-zinc-800/30 rounded-lg border border-zinc-800 space-y-2">
+                                                        <Label className="text-xs">Number</Label>
+                                                        <Input
+                                                            value={stat.number}
+                                                            onChange={(e) => {
+                                                                const newS = [...data.about.stats]
+                                                                newS[sIdx].number = e.target.value
+                                                                setData({ ...data, about: { ...data.about, stats: newS } })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700 h-8"
+                                                        />
+                                                        <Label className="text-xs">Label</Label>
+                                                        <Input
+                                                            value={stat.label}
+                                                            onChange={(e) => {
+                                                                const newS = [...data.about.stats]
+                                                                newS[sIdx].label = e.target.value
+                                                                setData({ ...data, about: { ...data.about, stats: newS } })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700 h-8"
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+
+                                    <Card className="border-zinc-800 bg-zinc-900 rounded-t-none">
+                                        <CardHeader>
+                                            <CardTitle>Mission Statement</CardTitle>
+                                            <CardDescription>The core philosophy displayed on your About page.</CardDescription>
+                                        </CardHeader>
+                                        <CardContent className="space-y-4">
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <Label>Title</Label>
+                                                    <Input
+                                                        value={data.about.mission.title}
+                                                        onChange={(e) => setData({ ...data, about: { ...data.about, mission: { ...data.about.mission, title: e.target.value } } })}
+                                                        className="bg-zinc-800 border-zinc-700"
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label>Subtitle</Label>
+                                                    <Input
+                                                        value={data.about.mission.subtitle}
+                                                        onChange={(e) => setData({ ...data, about: { ...data.about, mission: { ...data.about.mission, subtitle: e.target.value } } })}
+                                                        className="bg-zinc-800 border-zinc-700"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label>Mission Description</Label>
+                                                <Textarea
+                                                    value={data.about.mission.description}
+                                                    onChange={(e) => setData({ ...data, about: { ...data.about, mission: { ...data.about.mission, description: e.target.value } } })}
+                                                    className="bg-zinc-800 border-zinc-700 min-h-[120px]"
+                                                />
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </motion.div>
+                            </TabsContent>
+                        </AnimatePresence>
+                    </Tabs>
+                </div>
+            </main>
+        </div>
+    )
+}

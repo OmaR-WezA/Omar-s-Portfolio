@@ -2,8 +2,15 @@
 
 import { motion } from "framer-motion"
 import { Heart, ArrowUp } from "lucide-react"
+import { useState, useEffect } from "react"
 
 const Footer = () => {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
@@ -61,7 +68,7 @@ const Footer = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            © {new Date().getFullYear()} Omar Mohamed Fahem • Weza Production. All rights reserved.
+            © {mounted ? new Date().getFullYear() : 2026} Omar Mohamed Fahem • Weza Production. All rights reserved.
           </motion.p>
 
 

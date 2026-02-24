@@ -12,7 +12,12 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("home")
+  const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const navItems = [
     { name: "Home", href: "#home", icon: <Home className="w-4 h-4" /> },
@@ -125,14 +130,14 @@ const Header = () => {
                 Download CV
               </Button>
               <Button variant="ghost" size="sm" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="hover:bg-primary/10">
-                {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                {mounted && (theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />)}
               </Button>
             </div>
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden flex items-center space-x-2">
               <Button variant="ghost" size="sm" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-                {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                {mounted && (theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />)}
               </Button>
               <Button variant="ghost" size="sm" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                 {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

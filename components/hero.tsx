@@ -6,10 +6,16 @@ import { Button } from "@/components/ui/button"
 import { ArrowDown, Github, Linkedin, Mail, Phone, Play, Sparkles } from "lucide-react"
 import { useEffect, useState } from "react"
 
+import data from "@/data/portfolio-data.json"
+import { HeroData } from "@/types/portfolio"
+import { getIcon } from "@/lib/icon-utils"
+
+const heroData = data.hero as HeroData
+
 const Hero = () => {
   const [mounted, setMounted] = useState(false)
   const [roleIndex, setRoleIndex] = useState(0)
-  const roles = ["Full Stack Developer", "Creative Entrepreneur", "AI Innovator", "Video Production Lead"]
+  const roles = heroData.roles
 
   useEffect(() => {
     setMounted(true)
@@ -17,49 +23,17 @@ const Hero = () => {
       setRoleIndex((prev) => (prev + 1) % roles.length)
     }, 3000)
     return () => clearInterval(timer)
-  }, [])
+  }, [roles.length])
 
-  const socialLinks = [
-    // ... social links remain same
-    {
-      icon: <Linkedin className="w-5 h-5" />,
-      href: "https://www.linkedin.com/in/omar-fahem-121a87270/",
-      label: "LinkedIn",
-      color: "hover:text-blue-600",
-    },
-    {
-      icon: <Github className="w-5 h-5" />,
-      href: "https://github.com/OmaR-WezA",
-      label: "GitHub",
-      color: "hover:text-gray-600",
-    },
-    {
-      icon: <Mail className="w-5 h-5" />,
-      href: "mailto:omarfahem11@gmail.com",
-      label: "Email",
-      color: "hover:text-primary",
-    },
-    {
-      icon: <Phone className="w-5 h-5" />,
-      href: "tel:+201150665030",
-      label: "Phone",
-      color: "hover:text-purple-600",
-    },
-  ]
+  const socialLinks = heroData.socialLinks.map(link => ({
+    ...link,
+    icon: getIcon(link.icon, "w-5 h-5")
+  }))
 
   const scrollToAbout = () => {
     document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })
   }
 
-  if (!mounted) return (
-    <section id="home" className="min-h-screen flex items-center justify-center pt-20 bg-background">
-      <div className="container mx-auto px-4 text-center">
-        <div className="w-40 h-40 mx-auto bg-muted rounded-full animate-pulse mb-8" />
-        <div className="h-10 w-48 bg-muted rounded-full mx-auto mb-6" />
-        <div className="h-20 w-full max-w-2xl bg-muted rounded-xl mx-auto" />
-      </div>
-    </section>
-  )
 
   return (
     <section id="home" className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20 pb-10 bg-background selection:bg-primary/30">
@@ -68,7 +42,7 @@ const Hero = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(16,185,129,0.05),transparent_50%)]" />
 
         {/* Particles with Client-Side only positions */}
-        {[...Array(20)].map((_, i) => (
+        {mounted && [...Array(20)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-primary/20 rounded-full"
@@ -105,7 +79,7 @@ const Hero = () => {
             transition={{ delay: 0.2 }}
           >
             <div className="absolute inset-0 bg-gradient-to-tr from-primary via-primary/80 to-primary/60 rounded-full p-1.5 shadow-[0_0_40px_-10px_rgba(16,185,129,0.4)] group-hover:shadow-[0_0_60px_-10px_rgba(16,185,129,0.6)] transition-all duration-500">
-              <div className="w-full h-full rounded-full overflow-hidden bg-background ring-4 ring-background">
+              <div className="relative w-full h-full rounded-full overflow-hidden bg-background ring-4 ring-background">
                 <Image
                   src="/img/profile.jpg"
                   alt="Omar Mohamed Fahem"
@@ -140,16 +114,18 @@ const Hero = () => {
           {/* High-End Rolling Text */}
           <div className="h-12 flex items-center justify-center overflow-hidden mb-12">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={roleIndex}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="text-xl md:text-2xl font-bold tracking-tight bg-primary/5 text-primary/90 px-5 py-2 rounded-xl border border-primary/10"
-              >
-                {roles[roleIndex]}
-              </motion.div>
+              {mounted && (
+                <motion.div
+                  key={roleIndex}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-xl md:text-2xl font-bold tracking-tight bg-primary/5 text-primary/90 px-5 py-2 rounded-xl border border-primary/10"
+                >
+                  {roles[roleIndex]}
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
 
@@ -160,8 +136,7 @@ const Hero = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
           >
-            Bridging the gap between <span className="text-foreground">cutting-edge tech</span> and
-            <span className="text-foreground"> meaningful design</span>. Founder of Weza Production.
+            {heroData.description}
           </motion.p>
 
           {/* CTA Group */}

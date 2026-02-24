@@ -4,74 +4,11 @@ import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Calendar, MapPin } from "lucide-react"
 
+import data from "@/data/portfolio-data.json"
+import { ExperienceData } from "@/types/portfolio"
+
 const Experience = () => {
-  const experiences = [
-    {
-      title: "Learning management system (LMS).",
-      company: "Borg Al-Arab Technological University",
-      period: "Present",
-      location: "BATU Campus",
-      description: [
-        "Monitored, managed, and enhanced core modules of the university website and Learning Management System (LMS).",
-        "Developed and maintained the university printing system, ensuring controlled access, reliability, and efficient operation."
-      ],
-      current: true,
-    },
-    {
-      title: "Founder & CEO",
-      company: "Weza Production",
-      period: "Present",
-      location: "Egypt",
-      description: [
-        "Founded and currently leading Weza Production – a creative media company specializing in video production, branding, and platform hosting",
-        "Developed and deployed the company’s full-stack web platform using Laravel and React",
-        "Implemented admin dashboard to manage services, orders, and pricing packages",
-        "Oversaw hosting, database management (MySQL), and technical team coordination",
-      ],
-      current: true,
-      isBusiness: true,
-    },
-    {
-      title: "IT Technical Support – Team Lead",
-      company: "Ministry of Youth and Sports via Kayani Organization",
-      period: "Apr 2024 - Aug 2025",
-      location: "Cairo, Egypt",
-      description: [
-        "Lead technical team in designing and developing the organization's website",
-        "Manage full-stack development processes and ensure seamless integration",
-        "Coordinate with stakeholders to align functionality with organizational goals",
-        "Oversee technical infrastructure and system maintenance",
-      ],
-      current: false,
-    },
-    {
-      title: "IT Help Desk & Cashier",
-      company: "Community Restaurant BRGR",
-      period: "May 2024 – Sep 2024",
-      location: "Cairo, Egypt",
-      description: [
-        "Managed POS systems and resolved IT-related issues in fast-paced environment",
-        "Ensured smooth operation of restaurant IT systems",
-        "Enhanced operational efficiency through technical problem-solving",
-        "Provided customer service while maintaining technical systems",
-      ],
-      current: false,
-    },
-    {
-      title: "IT Training & Technical Experience",
-      company: "Telecom Egypt (WE)",
-      period: "2021 – 2024",
-      location: "Cairo, Egypt",
-      description: [
-        "Completed comprehensive 3-year technical training program",
-        "Gained expertise in telecommunications infrastructure and networking",
-        "Worked in live environments including Data Center operations",
-        "Developed practical skills in FTTX networks and fiber welding",
-        "Enhanced problem-solving abilities under Ministry of Communications",
-      ],
-      current: false,
-    },
-  ]
+  const experiences = data.experience as ExperienceData[]
 
   return (
     <section id="experience" className="py-20 bg-muted/30">

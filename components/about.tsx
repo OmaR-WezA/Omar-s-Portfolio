@@ -4,40 +4,19 @@ import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Code, Video, Lightbulb, Users, Award } from "lucide-react"
 
-const About = () => {
-  const highlights = [
-    {
-      icon: <Code className="w-6 h-6" />,
-      title: "Full Stack Developer",
-      description: "Expert in modern web technologies, from frontend React to backend Laravel and Python",
-      color: "from-primary/80 to-primary/40",
-    },
-    {
-      icon: <Video className="w-6 h-6" />,
-      title: "Creative Production",
-      description: "Professional video editing and creative content production through Weza Production",
-      color: "from-primary/70 to-primary/30",
-    },
-    {
-      icon: <Lightbulb className="w-6 h-6" />,
-      title: "AI Innovation",
-      description: "Pioneering AI solutions in agriculture and renewable energy sectors in Egypt",
-      color: "from-primary/80 to-primary/40",
-    },
-    {
-      icon: <Users className="w-6 h-6" />,
-      title: "Team Leadership",
-      description: "Leading technical teams and managing complex full-stack development projects",
-      color: "from-primary/70 to-primary/30",
-    },
-  ]
+import data from "@/data/portfolio-data.json"
+import { AboutData } from "@/types/portfolio"
+import { getIcon } from "@/lib/icon-utils"
 
-  const stats = [
-    { number: "3+", label: "Years Experience", color: "text-blue-500" },
-    { number: "20+", label: "Projects Completed", color: "text-primary/90" },
-    { number: "5+", label: "Technologies Mastered", color: "text-purple-500" },
-    { number: "2", label: "AI Innovations", color: "text-orange-500" },
-  ]
+const aboutData = data.about as AboutData
+
+const About = () => {
+  const highlights = aboutData.highlights.map(h => ({
+    ...h,
+    icon: getIcon(h.icon, "w-6 h-6")
+  }))
+
+  const stats = aboutData.stats
 
   return (
     <section id="about" className="py-20 bg-muted/30">
@@ -194,16 +173,13 @@ const About = () => {
                   <Award className="w-8 h-8" />
                 </div>
                 <div className="text-left">
-                  <h3 className="text-2xl font-bold">My Mission</h3>
-                  <p className="text-muted-foreground">Driving Innovation Forward</p>
+                  <h3 className="text-2xl font-bold">{aboutData.mission.title}</h3>
+                  <p className="text-muted-foreground">{aboutData.mission.subtitle}</p>
                 </div>
               </motion.div>
 
               <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-                To bridge the gap between cutting-edge technology and real-world solutions, creating digital experiences
-                that not only meet today's needs but anticipate tomorrow's challenges. Through continuous learning,
-                creative problem-solving, and collaborative leadership, I strive to make technology more accessible and
-                impactful for everyone.
+                {aboutData.mission.description}
               </p>
             </CardContent>
           </Card>

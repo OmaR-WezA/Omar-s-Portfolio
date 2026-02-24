@@ -15,6 +15,11 @@ const AutoImageSlider = () => {
 
   const [current, setCurrent] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Auto slide every 4 seconds
   useEffect(() => {
@@ -28,12 +33,14 @@ const AutoImageSlider = () => {
 
   return (
     <div className="relative w-full max-w-xl h-64 sm:h-72 md:h-80 lg:h-96 mx-auto rounded-2xl overflow-hidden border border-primary/20 shadow-2xl bg-muted/20 backdrop-blur-sm group">
-      <img
-        src={images[current]}
-        alt={`Slide ${current + 1}`}
-        className="w-full h-full object-cover transition-opacity duration-700"
-        style={{ opacity: 1 }}
-      />
+      {mounted && (
+        <img
+          src={images[current]}
+          alt={`Slide ${current + 1}`}
+          className="w-full h-full object-cover transition-opacity duration-700"
+          style={{ opacity: 1 }}
+        />
+      )}
 
       {/* Simple overlay shadow for better text contrast if needed */}
       <div className="absolute inset-0 bg-black/10 pointer-events-none" />

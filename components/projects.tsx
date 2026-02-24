@@ -9,25 +9,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink, Github, Shield, Trophy, Zap, Leaf, Sun, Play, X, ChevronLeft, ChevronRight, Wrench } from "lucide-react"
 
-interface Project {
-  id: number
-  title: string
-  category: string
-  description: string
-  longDescription: string
-  technologies: string[]
-  layoutSections?: string[]
-  features: string[]
-  icon: any
-  color: string
-  images: string[]
-  demoUrl: string
-  githubUrl: string
-  status: string
-}
+import data from "@/data/portfolio-data.json"
+import { ProjectData } from "@/types/portfolio"
+import { getIcon } from "@/lib/icon-utils"
+
+const projects = data.projects as ProjectData[]
 
 const Projects = () => {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const statusColors: Record<string, string> = {
     "Completed": "bg-green-500/90 text-white",
@@ -39,243 +28,6 @@ const Projects = () => {
     "Open Source": "bg-primary/90 text-white",
     "Private": "bg-zinc-700 text-white",
   }
-
-  const projects = [
-    {
-      id: 1,
-      title: "Berimbolo Security Website",
-      category: "Web Development",
-      description: "Full-stack secure website focused on performance and responsive design.",
-      longDescription:
-        "Developed a comprehensive security-focused website with emphasis on performance optimization and responsive design. The project features advanced security measures, optimized loading times, and a modern user interface that adapts seamlessly across all devices. Built with modern web technologies and following security best practices.",
-      technologies: ["React", "Laravel", "MySQL", "Bootstrap"],
-      layoutSections: ["Home", "Services", "Products", "Cart", "Contact"],
-
-      features: [
-        "Advanced security implementation with encryption",
-        "Performance optimization and caching",
-        "Responsive design across all devices",
-        "Modern UI/UX with smooth animations",
-        "Database integration with secure queries",
-        "Admin dashboard with role management",
-      ],
-      icon: <Shield className="w-6 h-6" />,
-      color: "from-primary/70 to-primary/30",
-      images: [
-        "/img/Berimbolo-Security/Home.png",
-        "/img/Berimbolo-Security/Service.png",
-        "/img/Berimbolo-Security/Services.png",
-        "/img/Berimbolo-Security/Products.png",
-        "/img/Berimbolo-Security/Cart.png",
-        "/img/Berimbolo-Security/CheckOut.png",
-      ],
-      demoUrl: "https://berimbolo-security-liart.vercel.app/",
-      githubUrl: "https://github.com/OmaR-WezA/berimbolo-security",
-      status: "Completed",
-    },
-    {
-      id: 2,
-      title: "Tournament Scoring System",
-      category: "Web Application",
-      description: "Real-time scoring system for university competitions with automated calculations.",
-      longDescription:
-        "Built a comprehensive real-time scoring system for university competitions featuring automated calculations, live updates, and interactive user interface. The system handles multiple tournament formats, provides real-time analytics, and includes comprehensive admin controls for tournament management.",
-      technologies: ["PHP", "MySQL"],
-      layoutSections: ["Dashboard", "Manage Participants", "Scores", "Events", "Tournament Rankings", "Register", "Login", "Logout"],
-      features: [
-        "Real-time score updates with WebSocket",
-        "Automated calculations and rankings",
-        "Multiple tournament format support",
-        "Live analytics dashboard",
-        "User role management system",
-        "Mobile-responsive interface",
-      ],
-      icon: <Trophy className="w-6 h-6" />,
-      color: "from-primary/80 to-primary/40",
-      images: [
-        "/img/Tournament-Scoring-System/dashboard1.png",
-        // "/img/Tournament-Scoring-System/Dashboard.jpg",
-        "/img/Tournament-Scoring-System/Manage-Participants.jpg",
-        "/img/Tournament-Scoring-System/Scores.jpg",
-        "/img/Tournament-Scoring-System/Events.jpg",
-        "/img/Tournament-Scoring-System/Tournament-Rankings.jpg",
-        // "/img/Tournament-Scoring-System/Login.jpg",
-      ],
-      demoUrl: "https://system-weza.kesug.com/",
-      githubUrl: "https://github.com/OmaR-WezA/Tournament-Scoring-Systems",
-      status: "In Progress",
-    },
-    {
-      id: 3,
-      title: "School Tournament Website",
-      category: "Web Platform",
-      description: "Interactive platform to manage match schedules, scores, and engagement.",
-      longDescription:
-        "Created a dynamic platform for managing school tournaments with features for scheduling matches, tracking scores, and enhancing user engagement. The platform includes admin panels, student dashboards, real-time notifications, and comprehensive tournament management tools.",
-      technologies: ["HTML", "Laravel", "JavaScript", "MySQL", "Bootstrap"],
-      layoutSections: ["Home", "Standing", "Match Schedule", "Statistics", "Draw"],
-
-      features: [
-        "Match scheduling and management system",
-        "Score tracking with live updates",
-        "User engagement and notification system",
-        "Comprehensive admin control panel",
-        "Student and teacher dashboards",
-        "Tournament bracket visualization",
-      ],
-      icon: <Zap className="w-6 h-6" />,
-      color: "from-teal-600 to-cyan-500",
-      images: [
-        "/img/School-Tournament-Website/WE-League/Home.jpg",
-        "/img/School-Tournament-Website/WE-League/Standing.jpg",
-        "/img/School-Tournament-Website/WE-League/Schedule.jpg",
-        "/img/School-Tournament-Website/WE-League/Statistics.jpg",
-        "/img/School-Tournament-Website/WE-League/Draw.jpg",
-      ],
-      demoUrl: "https://we-league.vercel.app/",
-      githubUrl: "https://github.com/OmaR-WezA/WE-League",
-      status: "Completed",
-    },
-    {
-      id: 4,
-      title: "AgriTechZ",
-      category: "AI Innovation",
-      description: "AI-powered smart drip irrigation system – first of its kind in Egypt.",
-      longDescription:
-        "Developed an innovative AI-powered smart drip irrigation system, the first of its kind in Egypt. The system uses machine learning algorithms to optimize water usage, monitor soil conditions, and automate irrigation processes for maximum crop yield while conserving water resources.",
-      technologies: ["C++", "IoT", "Sensors", "Arduino", "Data Analytics", "AI/ML"],
-      layoutSections: ["Home", "About", "Services", "Gallery", "Control Panel"],
-      features: [
-        "AI-powered irrigation optimization algorithms",
-        "Real-time soil moisture monitoring",
-        "Automated watering schedule generation",
-        "Water usage analytics and reporting",
-        "Mobile app for remote monitoring",
-        "Soil Moisture Sensor: Measures the water level in soil to decide if irrigation is needed or not",
-        "Weather Temperature Sensor: Detects ambient temperature to adjust watering based on heat levels",
-        "Weather Humidity Sensor: Monitors air humidity to help reduce unnecessary watering during humid conditions"
-      ],
-      icon: <Leaf className="w-6 h-6" />,
-      color: "from-green-600 to-lime-500",
-      images: [
-        "/img/agri-img/control.png",
-        "/img/agri-img/home.png",
-        "/img/agri-img/about.png",
-        "/img/agri-img/gallery.png",
-        "/img/agri-img/services.png",
-      ],
-      demoUrl: "https://agritechz-tech.vercel.app/",
-      githubUrl: "",
-      status: "Innovation Award Winner",
-    },
-    {
-      id: 5,
-      title: "SunBusters",
-      category: "AI Innovation",
-      description: "AI-based solar tracking system to optimize solar panel positioning and energy capture.",
-      longDescription:
-        "Designed an intelligent AI-based solar tracking system that optimizes solar panel positioning throughout the day to maximize energy capture. The system uses machine learning to predict optimal angles based on weather patterns, sun position, and historical data for enhanced efficiency.",
-      technologies: ["C++", "Arduino", "Sensors", "IoT", "Data Analytics", "AI/ML"],
-      features: [
-        "AI-powered solar tracking algorithms",
-        "Weather pattern prediction integration",
-        "Energy optimization and efficiency monitoring",
-        "Real-time positioning control system",
-        "Performance analytics dashboard",
-        "Predictive maintenance alerts",
-      ],
-      icon: <Sun className="w-6 h-6" />,
-      color: "from-yellow-500 to-orange-500",
-      images: [
-        "/img/SunBusters/model-3.jpg",
-        "/img/SunBusters/model-2.jpg",
-        "/img/SunBusters/model.jpg",
-
-      ],
-      demoUrl: "#",
-      githubUrl: "#",
-      status: "Innovation Award Winner",
-    },
-    {
-      id: 6,
-      title: "Dern-Support Platform",
-      category: "Web Application",
-      description: "Full-stack IT support platform for managing client tickets, assets, and reports.",
-      longDescription:
-        "Dern-Support is a full-stack platform developed for IT technical support companies. It includes features for managing client support tickets, tracking IT assets, generating performance reports, and streamlining internal communication. The system supports multiple user roles with secured authentication and admin controls. It aims to improve response time, customer satisfaction, and workflow automation for technical support teams.",
-      technologies: ["Laravel", "React", "MySQL", "PHP", "Bootstrap", "JavaScript"],
-      layoutSections: [
-        "Home",
-        "Client Dashboard",
-        "Reports",
-        "Support Tickets",
-        "Asset Management",
-        "Admin Panel",
-        "Login/Register"
-      ],
-      features: [
-        "Ticket creation, assignment, and status tracking",
-        "Asset management with inventory system",
-        "Real-time notifications and updates",
-        "Admin dashboard with analytics and logs",
-        "Multi-role authentication (Admin, Support, Client)",
-        "Performance and issue reports generation",
-        "Mobile-responsive and secure platform",
-      ],
-      icon: <Wrench className="w-6 h-6" />,
-      color: "from-emerald-700 to-slate-600",
-      images: [
-        "/img/Dern-Support/demo.png",
-        "/img/Dern-Support/demo1.png",
-        "/img/Dern-Support/demo2.png",
-        "/img/Dern-Support/demo3.png",
-        "/img/Dern-Support/logo.png",
-      ],
-      demoUrl: "#",
-      githubUrl: "#",
-      status: "Planned",
-    },
-    {
-      id: 7,
-      title: "Weza WhatsApp Sender",
-      category: "GUI Application",
-      description: "Automated WhatsApp messaging tool with Excel import, message templates, and delivery tracking.",
-      longDescription:
-        "Weza WhatsApp Sender is a powerful automation tool designed to simplify bulk WhatsApp messaging. It allows users to import contact lists directly from Excel, create and manage message templates, and track delivery reports. With its clean UI and robust backend automation, Weza streamlines marketing and communication workflows for businesses and professionals. It supports scheduling, multi-device setup, and message customization for efficient communication at scale.",
-      technologies: ["Python", "Tkinter", "Selenium", "Pandas", "Excel Integration", "React.js", "Firebase"],
-      layoutSections: [
-        "Main Dashboard",
-        "Message Templates",
-        "Excel Import",
-        "Delivery Tracking",
-        "Settings",
-        "Login",
-        "Dashboard"
-      ],
-      features: [
-        "Automated WhatsApp message sending",
-        "Import contacts from Excel files",
-        "Create and reuse message templates",
-        "Real-time delivery tracking and logging",
-        "Supports multiple devices and sessions",
-        "Scheduling and delay customization",
-        "User-friendly interface with error handling",
-        "Comes with an integrated Admin Dashboard for management and analytics."
-      ],
-      icon: "/img/icon/icon.ico",
-      color: "from-green-500 to-teal-500",
-      images: [
-        "/img/WhatsApp-Weza-Sender/image.png",
-        "/img/WhatsApp-Weza-Sender/image-1.png",
-        "/img/WhatsApp-Weza-Sender/image-2.png",
-        "/img/WhatsApp-Weza-Sender/icon.png",
-      ],
-      demoUrl: "https://omarportfolios.vercel.app/apps/weza-whatsapp-sender",
-      githubUrl: "",
-      status: "Completed",
-    },
-
-  ]
 
   const categories = ["All", "Web Development", "Web Application", "Web Platform", "AI Innovation", "GUI Application"]
   const [activeCategory, setActiveCategory] = useState("All")
@@ -405,13 +157,7 @@ const Projects = () => {
                         className={`w-10 h-10 rounded-lg bg-gradient-to-r ${project.color} flex items-center justify-center text-white mr-3`}
                         whileHover={{ scale: 1.1, rotate: 5 }}
                       >
-                        {typeof project.icon === "string" && project.icon.match(/\.(png|jpg|jpeg|ico|svg)$/i) ? (
-                          <div className="relative w-6 h-6">
-                            <Image src={project.icon} alt={project.title} fill className="object-contain" />
-                          </div>
-                        ) : (
-                          project.icon
-                        )}
+                        {getIcon(project.icon, "w-6 h-6")}
                       </motion.div>
                       <span className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
                         {project.category}
@@ -461,13 +207,7 @@ const Projects = () => {
                     <div
                       className={`w-12 h-12 rounded-lg bg-gradient-to-r ${selectedProject.color} flex items-center justify-center text-white`}
                     >
-                      {typeof selectedProject.icon === "string" && selectedProject.icon.match(/\.(png|jpg|jpeg|ico|svg)$/i) ? (
-                        <div className="relative w-8 h-8">
-                          <Image src={selectedProject.icon} alt={selectedProject.title} fill className="object-contain" />
-                        </div>
-                      ) : (
-                        selectedProject.icon
-                      )}
+                      {getIcon(selectedProject.icon, "w-8 h-8")}
                     </div>
                     {selectedProject.title}
                   </DialogTitle>
