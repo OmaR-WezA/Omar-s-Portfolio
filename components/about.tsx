@@ -10,31 +10,31 @@ const About = () => {
       icon: <Code className="w-6 h-6" />,
       title: "Full Stack Developer",
       description: "Expert in modern web technologies, from frontend React to backend Laravel and Python",
-      color: "from-blue-500 to-cyan-500",
+      color: "from-primary/80 to-primary/40",
     },
     {
       icon: <Video className="w-6 h-6" />,
       title: "Creative Production",
       description: "Professional video editing and creative content production through Weza Production",
-      color: "from-purple-500 to-pink-500",
+      color: "from-primary/70 to-primary/30",
     },
     {
       icon: <Lightbulb className="w-6 h-6" />,
       title: "AI Innovation",
       description: "Pioneering AI solutions in agriculture and renewable energy sectors in Egypt",
-      color: "from-green-500 to-emerald-500",
+      color: "from-primary/80 to-primary/40",
     },
     {
       icon: <Users className="w-6 h-6" />,
       title: "Team Leadership",
       description: "Leading technical teams and managing complex full-stack development projects",
-      color: "from-orange-500 to-red-500",
+      color: "from-primary/70 to-primary/30",
     },
   ]
 
   const stats = [
     { number: "3+", label: "Years Experience", color: "text-blue-500" },
-    { number: "20+", label: "Projects Completed", color: "text-green-500" },
+    { number: "20+", label: "Projects Completed", color: "text-primary/90" },
     { number: "5+", label: "Technologies Mastered", color: "text-purple-500" },
     { number: "2", label: "AI Innovations", color: "text-orange-500" },
   ]
@@ -70,33 +70,27 @@ const About = () => {
             viewport={{ once: true }}
             className="space-y-6"
           >
-            <div className="space-y-4 text-muted-foreground leading-relaxed">
-              <p className="text-lg">
-                I'm a <span className="text-primary font-semibold">Full Stack Web Developer</span> and{" "}
-                <span className="text-primary font-semibold">Creative Entrepreneur</span> with a passion for building
-                innovative digital solutions that make a real impact. Currently serving as IT Technical Support Team
-                Lead at the Ministry of Youth and Sports, where I lead technical teams in developing organizational
-                websites and digital infrastructure.
+            <div className="space-y-6 text-muted-foreground leading-relaxed text-lg">
+              <p className="text-foreground/90 font-medium">
+                I am a <span className="text-primary font-bold">Full Stack Developer</span> and{" "}
+                <span className="text-primary font-bold">Creative Visionary</span> currently driving technological
+                advancement at <span className="font-semibold text-foreground">Borg Al-Arab Technological University (BATU).</span>
               </p>
 
-              <p>
-                My journey spans over 3 years of intensive training with Telecom Egypt, where I gained hands-on
-                experience in telecommunications infrastructure, networking, and IT support. This foundation has
-                equipped me with a unique perspective on both software development and systems administration.
-              </p>
+              <div className="space-y-4">
+                <p>
+                  As the <span className="text-primary font-bold">Founder & CEO of Weza Production</span>, I lead a creative
+                  media startup that fuses professional cinema-grade production with high-end digital branding. My foundation
+                  is built on technical excellence, having previously served as the <span className="font-semibold text-primary/90">IT Technical Support Team Lead</span>
+                  for the Ministry of Youth and Sports and completing intensive specialised training with <span className="font-semibold text-foreground/80">Telecom Egypt (WE)</span>.
+                </p>
 
-              <p>
-                As the <span className="text-primary font-semibold">Founder of Weza Production</span>, I'm building a
-                digital media start-up that delivers comprehensive creative services on an on-demand model. We've
-                successfully handled major projects including complete media coverage for educational tournaments.
-              </p>
-
-              <p>
-                I'm particularly proud of developing <span className="text-green-600 font-semibold">AgriTechZ</span> -
-                the first AI-powered smart drip irrigation system in Egypt, and{" "}
-                <span className="text-yellow-600 font-semibold">SunBusters</span> - an AI-based solar tracking system,
-                both representing my commitment to using technology for meaningful environmental impact.
-              </p>
+                <p>
+                  I am dedicated to AI-powered sustainability, demonstrated through pioneering projects like
+                  <span className="text-primary font-bold"> AgriTechZ</span> and <span className="text-primary font-bold">SunBusters</span>,
+                  where I architect intelligent solutions for Egypt's complex environmental challenges.
+                </p>
+              </div>
             </div>
 
             <motion.div

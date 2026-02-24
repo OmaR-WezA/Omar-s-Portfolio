@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
-import { Code, Database, Server, Wrench, Palette, MessageSquare, Bug, Layout } from "lucide-react"
+import { Code, Database, Server, Wrench, Palette, MessageSquare, Bug, Layout, FileCode2, Zap } from "lucide-react"
 
 const Skills = () => {
   const skillCategories = [
@@ -15,13 +15,19 @@ const Skills = () => {
     {
       title: "Back-End Development",
       icon: <Server className="w-6 h-6" />,
-      skills: ["PHP", "Laravel", "Node.js", "Express.js", "Python", "OOP"],
-      color: "from-green-500 to-emerald-500",
+      skills: ["PHP", "Laravel", "Node.js", "Express.js"],
+      color: "from-primary/80 to-primary/40",
+    },
+    {
+      title: "Programming Language",
+      icon: <FileCode2 className="w-6 h-6" />,
+      skills: ["Python", "OOP", "Data Structure", "Algorithm"],
+      color: "from-primary/80 to-primary/40",
     },
     {
       title: "Database & Data",
       icon: <Database className="w-6 h-6" />,
-      skills: ["SQL", "MySQL", "MariaDB", "Data Structures", "Algorithms"],
+      skills: ["SQL", "MySQL", "MariaDB", "Algorithms"],
       color: "from-purple-500 to-violet-500",
     },
     {
@@ -52,7 +58,13 @@ const Skills = () => {
       title: "GUI Development",
       icon: <Layout className="w-6 h-6" />,
       skills: ["Tkinter"],
-      color: "from-teal-500 to-cyan-600",
+      color: "from-primary/70 to-primary/30",
+    },
+    {
+      title: "Networking",
+      icon: <Zap className="w-6 h-6" />,
+      skills: ["Computer Network", "Network Topology", "CCNA"],
+      color: "from-primary/70 to-primary/30",
     },
   ];
 
@@ -67,7 +79,11 @@ const Skills = () => {
     "Google Sheets",
     "Adobe Creative Suite",
     "Figma",
+    "CapCut",
+    "Adope"
   ]
+
+  // Don't Miss adding Soft skills.
 
   return (
     <section id="skills" className="py-20">
@@ -86,46 +102,68 @@ const Skills = () => {
           </p>
         </motion.div>
 
-        {/* Skills Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {skillCategories.map((category, index) => (
-            <motion.div
-              key={category.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              viewport={{ once: true }}
-            >
-              <Card className="h-full hover:shadow-lg transition-all duration-300 group">
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    <motion.div
-                      className={`w-12 h-12 rounded-lg bg-gradient-to-r ${category.color} flex items-center justify-center text-white mr-4`}
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                    >
-                      {category.icon}
-                    </motion.div>
-                    <h3 className="text-lg font-semibold">{category.title}</h3>
-                  </div>
+        {/* Skills Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-4 mb-16 px-2">
+          {skillCategories.map((category, index) => {
+            // Balanced Bento spans
+            let spans = "lg:col-span-4"
+            if (index === 0) spans = "lg:col-span-6 lg:row-span-1" // Front-End
+            if (index === 1) spans = "lg:col-span-3 lg:row-span-1" // Back-End
+            if (index === 2) spans = "lg:col-span-3 lg:row-span-1" // Soft Skills
+            if (index === 3) spans = "lg:col-span-3 lg:row-span-1" // DB
+            if (index === 4) spans = "lg:col-span-4 lg:row-span-1" // Tech Support
+            if (index === 5) spans = "lg:col-span-5 lg:row-span-1" // Creative
 
-                  <div className="flex flex-wrap gap-2">
-                    {category.skills.map((skill, skillIndex) => (
-                      <motion.span
-                        key={skill}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: index * 0.1 + skillIndex * 0.05 }}
-                        viewport={{ once: true }}
-                        className="px-3 py-1 bg-muted rounded-full text-sm font-medium hover:bg-primary/10 transition-colors duration-200"
+            return (
+              <motion.div
+                key={category.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className={spans}
+              >
+                <Card className="h-full group border border-primary/10 bg-background/40 backdrop-blur-xl overflow-hidden relative hover:border-primary/30 transition-all duration-500 hover:shadow-xl">
+                  {/* Decorative Background Pattern */}
+                  <div className="absolute inset-0 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity pointer-events-none"
+                    style={{ backgroundImage: 'radial-gradient(circle, currentColor 0.5px, transparent 0.5px)', backgroundSize: '15px 15px' }}
+                  />
+
+                  {/* Gradient Glow */}
+                  <div className={`absolute -top-12 -right-12 w-48 h-48 bg-gradient-to-br ${category.color} opacity-[0.08] blur-3xl group-hover:opacity-20 transition-all duration-700`} />
+
+                  <CardContent className="p-6 h-full flex flex-col relative z-10">
+                    <div className="flex items-center gap-3 mb-6">
+                      <motion.div
+                        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center text-white shadow-lg`}
+                        whileHover={{ scale: 1.05 }}
                       >
-                        {skill}
-                      </motion.span>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                        {category.icon}
+                      </motion.div>
+                      <div>
+                        <h3 className="text-lg font-bold tracking-tight text-foreground/90">{category.title}</h3>
+                        <div className={`h-0.5 w-8 bg-gradient-to-r ${category.color} rounded-full mt-1 opacity-50`} />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      {category.skills.map((skill, skillIndex) => (
+                        <motion.span
+                          key={skill}
+                          initial={{ opacity: 0, x: -10 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05 + skillIndex * 0.02 }}
+                          className="px-4 py-2 bg-primary/[0.03] hover:bg-primary/10 border border-primary/5 hover:border-primary/20 rounded-xl text-sm font-medium transition-all duration-300 hover:-translate-y-1 cursor-default text-muted-foreground hover:text-foreground"
+                        >
+                          {skill}
+                        </motion.span>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )
+          })}
         </div>
 
         {/* Tools & Software */}

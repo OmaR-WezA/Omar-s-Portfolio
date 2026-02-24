@@ -60,7 +60,7 @@ const Header = () => {
 
   const downloadCV = () => {
     const link = document.createElement("a")
-    link.href = "/cv/Omar_Mohamed_Fahem_CV.pdf"
+    link.href = "/cv/Omar_Mohamed_Fahem_CV_Updated.pdf"
     link.download = "Omar_Mohamed_Fahem_CV.pdf"
     document.body.appendChild(link)
     link.click()

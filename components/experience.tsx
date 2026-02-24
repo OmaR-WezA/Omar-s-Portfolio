@@ -7,10 +7,21 @@ import { Calendar, MapPin } from "lucide-react"
 const Experience = () => {
   const experiences = [
     {
-      title: "Founder & Full Stack Developer",
+      title: "Learning management system (LMS).",
+      company: "Borg Al-Arab Technological University",
+      period: "Present",
+      location: "BATU Campus",
+      description: [
+        "Monitored, managed, and enhanced core modules of the university website and Learning Management System (LMS).",
+        "Developed and maintained the university printing system, ensuring controlled access, reliability, and efficient operation."
+      ],
+      current: true,
+    },
+    {
+      title: "Founder & CEO",
       company: "Weza Production",
       period: "Present",
-      location: "FreeLance",
+      location: "Egypt",
       description: [
         "Founded and currently leading Weza Production – a creative media company specializing in video production, branding, and platform hosting",
         "Developed and deployed the company’s full-stack web platform using Laravel and React",
@@ -18,6 +29,7 @@ const Experience = () => {
         "Oversaw hosting, database management (MySQL), and technical team coordination",
       ],
       current: true,
+      isBusiness: true,
     },
     {
       title: "IT Technical Support – Team Lead",
@@ -98,11 +110,13 @@ const Experience = () => {
                   <CardContent className="p-8">
                     <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-4">
                       <div className="mb-4 lg:mb-0">
-                        <h3 className="text-2xl font-bold text-primary mb-2">{exp.title}</h3>
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          <h3 className="text-2xl font-bold text-primary">{exp.title}</h3>
+                        </div>
                         <h4 className="text-lg font-semibold text-foreground mb-2">{exp.company}</h4>
                         {exp.current && (
-                          <span className="inline-block bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 px-3 py-1 rounded-full text-sm font-medium">
-                            Current Position
+                          <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${exp.isBusiness ? "bg-primary/20 text-primary border border-primary/20 shadow-sm" : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"}`}>
+                            {exp.isBusiness ? "My Business" : "Current Position"}
                           </span>
                         )}
                       </div>

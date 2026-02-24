@@ -4,7 +4,6 @@ import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Camera, Video, Palette, Globe, Award, Users, Zap, ExternalLink, Play, ImageIcon } from "lucide-react"
-import SimpleImageSlider from "./Slider"
 import AutoImageSlider from "./Slider"
 import { achievements } from "./achievementsData"
 
@@ -14,31 +13,31 @@ const WezaProduction = () => {
       icon: <Video className="w-6 h-6" />,
       title: "Video Production",
       description: "Professional video creation, filming, and editing services for events and marketing",
-      color: "from-red-500 to-pink-500",
+      color: "from-primary/80 to-primary/40",
     },
     {
       icon: <Camera className="w-6 h-6" />,
       title: "Event Photography",
       description: "Comprehensive event coverage with high-quality photography and documentation",
-      color: "from-blue-500 to-cyan-500",
+      color: "from-primary/70 to-primary/30",
     },
     {
       icon: <Palette className="w-6 h-6" />,
       title: "Poster & Branding Design",
       description: "Creative visual identity design, posters, and branding materials",
-      color: "from-purple-500 to-violet-500",
+      color: "from-cyan-500 to-emerald-400",
     },
     {
       icon: <Users className="w-6 h-6" />,
       title: "School Branding",
       description: "Specialized branding solutions for educational institutions and academic events",
-      color: "from-green-500 to-emerald-500",
+      color: "from-primary/80 to-primary/40",
     },
     {
       icon: <Globe className="w-6 h-6" />,
       title: "Website Hosting & Management",
       description: "Complete web hosting solutions with ongoing maintenance and management",
-      color: "from-orange-500 to-red-500",
+      color: "from-emerald-600 to-teal-600",
     },
   ]
 
@@ -113,7 +112,7 @@ const WezaProduction = () => {
           viewport={{ once: true }}
           className="mb-12"
         >
-          <Card className="overflow-hidden border-0 bg-gradient-to-r from-primary/10 via-background to-secondary/10">
+          <Card className="overflow-hidden border-0 bg-gradient-to-r from-primary/10 via-background to-primary/5">
             <CardContent className="p-0">
               <div className="grid lg:grid-cols-2 gap-0">
                 {/* Content */}

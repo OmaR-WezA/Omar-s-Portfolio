@@ -38,7 +38,7 @@ const Contact = () => {
       title: "Phone",
       value: "+20 1150665030",
       href: "tel:+201150665030",
-      color: "from-green-500 to-emerald-500",
+      color: "from-primary/80 to-primary/40",
       description: "Call for urgent matters",
     },
     {
@@ -224,12 +224,12 @@ const Contact = () => {
               transition={{ delay: 0.4 }}
               viewport={{ once: true }}
             >
-              <Card className="border-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10">
+              <Card className="border border-primary/20 bg-primary/5">
                 <CardContent className="p-6">
                   <div className="flex items-center">
-                    <div className="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse" />
+                    <div className="w-3 h-3 bg-primary rounded-full mr-3 animate-pulse" />
                     <div>
-                      <p className="font-semibold text-green-700 dark:text-green-300">Available for Projects</p>
+                      <p className="font-semibold text-primary/80">Available for Projects</p>
                       <p className="text-sm text-muted-foreground">Currently accepting new opportunities</p>
                     </div>
                   </div>

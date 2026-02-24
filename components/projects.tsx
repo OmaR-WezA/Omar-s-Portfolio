@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -8,17 +9,34 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink, Github, Shield, Trophy, Zap, Leaf, Sun, Play, X, ChevronLeft, ChevronRight, Wrench } from "lucide-react"
 
+interface Project {
+  id: number
+  title: string
+  category: string
+  description: string
+  longDescription: string
+  technologies: string[]
+  layoutSections?: string[]
+  features: string[]
+  icon: any
+  color: string
+  images: string[]
+  demoUrl: string
+  githubUrl: string
+  status: string
+}
+
 const Projects = () => {
-  const [selectedProject, setSelectedProject] = useState(null)
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const statusColors = {
+  const statusColors: Record<string, string> = {
     "Completed": "bg-green-500/90 text-white",
     "In Progress": "bg-blue-500/90 text-white",
     "Pending": "bg-orange-500/90 text-white",
     "Draft": "bg-gray-500/90 text-white",
     "Planned": "bg-purple-500/90 text-white",
     "Innovation Award Winner": "bg-yellow-500/90 text-white",
-    "Open Source": "bg-emerald-500/90 text-white",
+    "Open Source": "bg-primary/90 text-white",
     "Private": "bg-zinc-700 text-white",
   }
 
@@ -42,7 +60,7 @@ const Projects = () => {
         "Admin dashboard with role management",
       ],
       icon: <Shield className="w-6 h-6" />,
-      color: "from-blue-500 to-cyan-500",
+      color: "from-primary/70 to-primary/30",
       images: [
         "/img/Berimbolo-Security/Home.png",
         "/img/Berimbolo-Security/Service.png",
@@ -73,7 +91,7 @@ const Projects = () => {
         "Mobile-responsive interface",
       ],
       icon: <Trophy className="w-6 h-6" />,
-      color: "from-green-500 to-emerald-500",
+      color: "from-primary/80 to-primary/40",
       images: [
         "/img/Tournament-Scoring-System/dashboard1.png",
         // "/img/Tournament-Scoring-System/Dashboard.jpg",
@@ -106,7 +124,7 @@ const Projects = () => {
         "Tournament bracket visualization",
       ],
       icon: <Zap className="w-6 h-6" />,
-      color: "from-purple-500 to-violet-500",
+      color: "from-teal-600 to-cyan-500",
       images: [
         "/img/School-Tournament-Website/WE-League/Home.jpg",
         "/img/School-Tournament-Website/WE-League/Standing.jpg",
@@ -205,7 +223,7 @@ const Projects = () => {
         "Mobile-responsive and secure platform",
       ],
       icon: <Wrench className="w-6 h-6" />,
-      color: "from-slate-500 to-gray-700",
+      color: "from-emerald-700 to-slate-600",
       images: [
         "/img/Dern-Support/demo.png",
         "/img/Dern-Support/demo1.png",
@@ -244,7 +262,7 @@ const Projects = () => {
         "User-friendly interface with error handling",
         "Comes with an integrated Admin Dashboard for management and analytics."
       ],
-      icon: "img/icon/icon.ico",
+      icon: "/img/icon/icon.ico",
       color: "from-green-500 to-teal-500",
       images: [
         "/img/WhatsApp-Weza-Sender/image.png",
@@ -344,11 +362,15 @@ const Projects = () => {
               >
                 <Card className="h-full hover:shadow-xl transition-all duration-300 group cursor-pointer overflow-hidden border-0 bg-background/50 backdrop-blur-sm">
                   <div className="relative overflow-hidden">
-                    <img
-                      src={project.images[0] || "/placeholder.svg"}
-                      alt={project.title}
-                      className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
+                    <div className="relative h-48 w-full overflow-hidden">
+                      <Image
+                        src={project.images[0] || "/placeholder.svg"}
+                        alt={project.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        priority={index < 2}
+                      />
+                    </div>
                     <div
                       className={`absolute inset-0 bg-gradient-to-t ${project.color} opacity-0 group-hover:opacity-90 transition-opacity duration-300 flex items-center justify-center`}
                     >
@@ -384,7 +406,9 @@ const Projects = () => {
                         whileHover={{ scale: 1.1, rotate: 5 }}
                       >
                         {typeof project.icon === "string" && project.icon.match(/\.(png|jpg|jpeg|ico|svg)$/i) ? (
-                          <img src={project.icon} alt={project.title} className="w-6 h-6 object-contain" />
+                          <div className="relative w-6 h-6">
+                            <Image src={project.icon} alt={project.title} fill className="object-contain" />
+                          </div>
                         ) : (
                           project.icon
                         )}
@@ -438,7 +462,9 @@ const Projects = () => {
                       className={`w-12 h-12 rounded-lg bg-gradient-to-r ${selectedProject.color} flex items-center justify-center text-white`}
                     >
                       {typeof selectedProject.icon === "string" && selectedProject.icon.match(/\.(png|jpg|jpeg|ico|svg)$/i) ? (
-                        <img src={selectedProject.icon} alt={selectedProject.title} className="w-8 h-8 object-contain" />
+                        <div className="relative w-8 h-8">
+                          <Image src={selectedProject.icon} alt={selectedProject.title} fill className="object-contain" />
+                        </div>
                       ) : (
                         selectedProject.icon
                       )}
@@ -451,10 +477,11 @@ const Projects = () => {
                   {/* Image Gallery */}
                   <div className="relative">
                     <div className="relative h-80 rounded-lg overflow-hidden">
-                      <img
+                      <Image
                         src={selectedProject.images[currentImageIndex] || "/placeholder.svg"}
                         alt={`${selectedProject.title} - Image ${currentImageIndex + 1}`}
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
                       />
 
                       {selectedProject.images.length > 1 && (

@@ -64,13 +64,13 @@ const Certifications = () => {
 
   const categoryColors = {
     "Web Development": "from-blue-500 to-cyan-500",
-    Backend: "from-green-500 to-emerald-500",
+    Backend: "from-teal-600 to-indigo-600",
     Database: "from-purple-500 to-violet-500",
     Frontend: "from-orange-500 to-red-500",
     Programming: "from-pink-500 to-rose-500",
     Networking: "from-indigo-500 to-blue-500",
     "IT Support": "from-yellow-500 to-orange-500",
-    "Learning And Growing": "from-blue-500 to-green-500"
+    "Learning And Growing": "from-indigo-600 to-teal-600"
 
   }
 

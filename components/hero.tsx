@@ -1,34 +1,26 @@
 "use client"
 
-import { motion } from "framer-motion"
+import Image from "next/image"
+import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowDown, Github, Linkedin, Mail, Phone, Play, Sparkles } from "lucide-react"
 import { useEffect, useState } from "react"
 
 const Hero = () => {
-  const [text, setText] = useState("")
-  const roles = ["Full Stack Developer", "Video Editor", "Creative Entrepreneur", "AI Innovator"]
-  const [currentRole, setCurrentRole] = useState(0)
+  const [mounted, setMounted] = useState(false)
+  const [roleIndex, setRoleIndex] = useState(0)
+  const roles = ["Full Stack Developer", "Creative Entrepreneur", "AI Innovator", "Video Production Lead"]
 
   useEffect(() => {
-    const roleText = roles[currentRole]
-    let index = 0
-
+    setMounted(true)
     const timer = setInterval(() => {
-      setText(roleText.slice(0, index))
-      index++
-      if (index > roleText.length) {
-        setTimeout(() => {
-          setCurrentRole((prev) => (prev + 1) % roles.length)
-        }, 2000)
-        clearInterval(timer)
-      }
-    }, 100)
-
+      setRoleIndex((prev) => (prev + 1) % roles.length)
+    }, 3000)
     return () => clearInterval(timer)
-  }, [currentRole])
+  }, [])
 
   const socialLinks = [
+    // ... social links remain same
     {
       icon: <Linkedin className="w-5 h-5" />,
       href: "https://www.linkedin.com/in/omar-fahem-121a87270/",
@@ -45,7 +37,7 @@ const Hero = () => {
       icon: <Mail className="w-5 h-5" />,
       href: "mailto:omarfahem11@gmail.com",
       label: "Email",
-      color: "hover:text-green-600",
+      color: "hover:text-primary",
     },
     {
       icon: <Phone className="w-5 h-5" />,
@@ -59,207 +51,168 @@ const Hero = () => {
     document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })
   }
 
-  return (
-    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
-      {/* Animated Background */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+  if (!mounted) return (
+    <section id="home" className="min-h-screen flex items-center justify-center pt-20 bg-background">
+      <div className="container mx-auto px-4 text-center">
+        <div className="w-40 h-40 mx-auto bg-muted rounded-full animate-pulse mb-8" />
+        <div className="h-10 w-48 bg-muted rounded-full mx-auto mb-6" />
+        <div className="h-20 w-full max-w-2xl bg-muted rounded-xl mx-auto" />
+      </div>
+    </section>
+  )
 
-        {/* Floating Particles */}
-        {[...Array(30)].map((_, i) => (
+  return (
+    <section id="home" className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20 pb-10 bg-background selection:bg-primary/30">
+      {/* Animated Background Content */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(16,185,129,0.05),transparent_50%)]" />
+
+        {/* Particles with Client-Side only positions */}
+        {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-primary/30 rounded-full"
+            className="absolute w-1 h-1 bg-primary/20 rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: `${(i * 7) % 100}%`,
+              top: `${(i * 11) % 100}%`,
             }}
             animate={{
-              y: [0, -30, 0],
-              opacity: [0, 1, 0],
-              scale: [1, 1.5, 1],
+              y: [0, -40, 0],
+              opacity: [0.1, 0.4, 0.1],
+              scale: [1, 1.2, 1],
             }}
             transition={{
-              duration: 3 + Math.random() * 2,
-              repeat: Number.POSITIVE_INFINITY,
-              delay: Math.random() * 2,
+              duration: 4 + (i % 3),
+              repeat: Infinity,
+              delay: i * 0.2,
             }}
           />
         ))}
-
-        {/* Geometric Shapes */}
-        <motion.div
-          className="absolute top-20 left-10 w-20 h-20 border border-primary/20 rounded-full"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-        />
-        <motion.div
-          className="absolute bottom-20 right-10 w-16 h-16 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg"
-          animate={{ rotate: -360 }}
-          transition={{ duration: 25, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-        />
       </div>
 
       <div className="container mx-auto px-4 text-center">
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-5xl mx-auto"
         >
-          {/* Profile Image */}
+          {/* Enhanced Profile Image */}
           <motion.div
-            className="relative w-40 h-40 mx-auto mb-8"
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            className="relative w-36 h-36 md:w-44 md:h-44 mx-auto mb-10 group"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-full p-1">
-              <div className="w-full h-full rounded-full overflow-hidden bg-background">
-                <img
+            <div className="absolute inset-0 bg-gradient-to-tr from-primary via-primary/80 to-primary/60 rounded-full p-1.5 shadow-[0_0_40px_-10px_rgba(16,185,129,0.4)] group-hover:shadow-[0_0_60px_-10px_rgba(16,185,129,0.6)] transition-all duration-500">
+              <div className="w-full h-full rounded-full overflow-hidden bg-background ring-4 ring-background">
+                <Image
                   src="/img/profile.jpg"
                   alt="Omar Mohamed Fahem"
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                  priority
                 />
               </div>
             </div>
             <motion.div
-              className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center"
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+              className="absolute -top-2 -right-2 w-10 h-10 bg-background border border-primary/20 rounded-full flex items-center justify-center shadow-xl shadow-primary/10"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
             >
-              <Sparkles className="w-4 h-4 text-white" />
+              <Sparkles className="w-5 h-5 text-primary" />
             </motion.div>
           </motion.div>
 
-          {/* Greeting */}
+          {/* Name Section with Better Typography */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="mb-4"
+            className="mb-6 flex flex-col items-center"
           >
-            <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium">
-              👋 Hello, I'm
-            </span>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 tracking-tighter leading-[0.9]">
+              <span className="opacity-40 font-medium block text-2xl md:text-3xl tracking-normal mb-4 font-sans italic">Creative Developer</span>
+              Omar <span className="text-transparent bg-clip-text bg-gradient-to-b from-foreground via-foreground/90 to-foreground/50">Fahem</span>
+            </h1>
           </motion.div>
 
-          {/* Name */}
-          <motion.h1
-            className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-          >
-            <span className="bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
-              Omar Mohamed
-            </span>
-            <br />
-            <span className="text-foreground">Fahem</span>
-          </motion.h1>
+          {/* High-End Rolling Text */}
+          <div className="h-12 flex items-center justify-center overflow-hidden mb-12">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={roleIndex}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="text-xl md:text-2xl font-bold tracking-tight bg-primary/5 text-primary/90 px-5 py-2 rounded-xl border border-primary/10"
+              >
+                {roles[roleIndex]}
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-          {/* Animated Role */}
-          <motion.div
-            className="text-2xl md:text-3xl text-muted-foreground mb-8 h-12 flex items-center justify-center"
+          {/* Description */}
+          <motion.p
+            className="text-lg md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed font-medium opacity-80"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
           >
-            <span className="mr-2">I'm a</span>
-            <span className="text-primary font-semibold min-w-[300px] text-left">
-              {text}
-              <motion.span
-                className="inline-block w-0.5 h-8 bg-primary ml-1"
-                animate={{ opacity: [0, 1, 0] }}
-                transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY }}
-              />
-            </span>
-          </motion.div>
+            Bridging the gap between <span className="text-foreground">cutting-edge tech</span> and
+            <span className="text-foreground"> meaningful design</span>. Founder of Weza Production.
+          </motion.p>
 
-          {/* Description */}
-          <motion.p
-            className="text-lg md:text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed"
+          {/* CTA Group */}
+          <motion.div
+            className="flex flex-col sm:flex-row gap-5 justify-center mb-20"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1 }}
           >
-            Passionate about creating innovative digital solutions and leading creative projects. Currently building the
-            future through <span className="text-primary font-semibold">AI innovations</span> and
-            <span className="text-primary font-semibold"> creative entrepreneurship</span>.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2 }}
-          >
             <Button
               size="lg"
               onClick={() => document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" })}
-              className="text-lg px-8 py-4 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="h-16 px-10 text-xl font-bold rounded-2xl bg-primary hover:bg-primary/90 text-white shadow-xl shadow-primary/20 transition-all duration-300 hover:-translate-y-1"
             >
-              <Play className="w-5 h-5 mr-2" />
-              View My Work
+              Start Exploration
             </Button>
             <Button
               variant="outline"
               size="lg"
               onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
-              className="text-lg px-8 py-4 border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+              className="h-16 px-10 text-xl font-bold rounded-2xl border-2 border-primary/20 hover:bg-primary/10 hover:border-primary transition-all duration-300"
             >
-              Let's Connect
+              Initiate Chat
             </Button>
           </motion.div>
 
-          {/* Social Links */}
-          <motion.div
-            className="flex justify-center space-x-6 mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.4 }}
-          >
-            {socialLinks.map((link, index) => (
-              <motion.a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`p-4 rounded-full bg-background border border-border hover:border-primary/50 transition-all duration-300 ${link.color} group`}
-                whileHover={{ scale: 1.1, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.4 + index * 0.1 }}
-              >
-                <motion.div
-                  whileHover={{ rotate: 5 }}
-                  className="group-hover:scale-110 transition-transform duration-200"
-                >
+          {/* Final Social Bar */}
+          <div className="flex justify-center items-center gap-8 mb-12">
+            <div className="h-px w-12 bg-primary/20" />
+            <div className="flex gap-4">
+              {socialLinks.map((link) => (
+                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-emerald-400 transition-all duration-300 transform hover:scale-125">
                   {link.icon}
-                </motion.div>
-              </motion.a>
-            ))}
-          </motion.div>
-
-          {/* Scroll Indicator */}
-          <motion.button
-            onClick={scrollToAbout}
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-muted-foreground hover:text-primary transition-colors duration-300 group"
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 1.8 }}
-          >
-            <div className="flex flex-col items-center space-y-2">
-              <span className="text-sm font-medium">Scroll Down</span>
-              <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform duration-200" />
+                </a>
+              ))}
             </div>
-          </motion.button>
+            <div className="h-px w-12 bg-primary/20" />
+          </div>
+
         </motion.div>
       </div>
+
+      {/* Scroll Down Hint */}
+      <motion.button
+        onClick={scrollToAbout}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-primary/40 hover:text-primary transition-all duration-500"
+        animate={{ y: [0, 10, 0] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <ArrowDown className="w-8 h-8" />
+      </motion.button>
     </section>
   )
 }

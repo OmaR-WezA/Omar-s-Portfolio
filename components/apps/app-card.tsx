@@ -1,6 +1,7 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
+import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Star } from "lucide-react"
@@ -35,9 +36,11 @@ export function AppCard({ app }: AppCardProps) {
                 <div className="p-6 space-y-4">
                     {/* Icon and Header */}
                     <div className="flex items-start justify-between">
-                        <div className={`p-3 rounded-lg bg-gradient-to-br ${app.color} text-white flex items-center justify-center`} style={{ width: 48, height: 48 }}>
+                        <div className={`relative p-3 rounded-lg bg-gradient-to-br ${app.color} text-white flex items-center justify-center`} style={{ width: 48, height: 48 }}>
                             {isImage(app.icon) ? (
-                                <img src={app.icon} alt={app.name} className="w-8 h-8 object-contain" />
+                                <div className="relative w-8 h-8">
+                                    <Image src={app.icon} alt={app.name} fill className="object-contain" />
+                                </div>
                             ) : (
                                 <span className="text-2xl">{app.icon}</span>
                             )}

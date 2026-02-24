@@ -34,7 +34,7 @@ const Volunteering = () => {
       title: "ICPC Competitive Programming",
       description: "Participated twice in the International Collegiate Programming Contest",
       icon: <Users className="w-6 h-6" />,
-      color: "from-green-500 to-emerald-500",
+      color: "from-primary/80 to-primary/40",
     },
     {
       title: "EduTech Egypt Exhibition Finalist",
@@ -167,7 +167,7 @@ const Volunteering = () => {
                   <p className="text-muted-foreground text-sm">Level 3 training and certification</p>
                 </div>
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center text-white mx-auto mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-primary/70 to-primary/30 rounded-full flex items-center justify-center text-white mx-auto mb-4">
                     <Users className="w-8 h-8" />
                   </div>
                   <h5 className="font-semibold mb-2">Ready For Tomorrow Program</h5>
