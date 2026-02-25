@@ -197,7 +197,7 @@
     },
     {
       "id": 2,
-      "title": "Tournament Scoring System test local",
+      "title": "Tournament Scoring System",
       "category": "Web Application",
       "description": "Real-time scoring system for university competitions with automated calculations.",
       "longDescription": "Built a comprehensive real-time scoring system for university competitions featuring automated calculations, live updates, and interactive user interface. The system handles multiple tournament formats, provides real-time analytics, and includes comprehensive admin controls for tournament management.",

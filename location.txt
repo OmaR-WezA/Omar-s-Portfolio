@@ -3,3 +3,18 @@ This Project is located at D:\Portfolio\Omar's-Portfolio.
 This commit "	
 Improving SEO, Performance, update on design and UI"
 is for coding and manual adding data.
+
+to go back:
+أولاً، هات رقم النسخة (Commit Hash):
+git log --oneline --grep="Improving SEO, Performance, update on design and UI"
+هيظهر لك سطر فيه كود (مثلاً abc1234). انسخ الكود واكتبه هنا:
+git reset --hard abc1234
+(بدل abc1234 بالكود اللي ظهرلك).
+
+git update-index --assume-unchanged data/portfolio-data.json
+{
+    
+بيخلي الـ Git "يعمي عينه" عن ملف الداتا اللي عندك لوكل.
+مهما عدلت في ملف الـ JSON أو سيبته قديم، الـ Git مستحيل يطلبه منك وأنت بترفع شغل الـ CSS.
+الملف هيفضل موجود على الـ Repository (عشان Vercel يفضل شغال)، بس التحديثات هتيجي فقط من الـ Dashboard.
+}

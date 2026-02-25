@@ -22,7 +22,39 @@ export default function AdminDashboard() {
     const [password, setPassword] = useState("")
     const [isSaving, setIsSaving] = useState(false)
     const [isLoggingIn, setIsLoggingIn] = useState(false)
+    const [syncMode, setSyncMode] = useState<"local" | "github">("github")
     const [data, setData] = useState<PortfolioData>(initialData as PortfolioData)
+    const [lastSavedData, setLastSavedData] = useState<string>(JSON.stringify(initialData))
+
+    const hasUnsavedChanges = JSON.stringify(data) !== lastSavedData
+
+    // Warn on window close/refresh
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (hasUnsavedChanges) {
+                e.preventDefault()
+                e.returnValue = ""
+            }
+        }
+        window.addEventListener("beforeunload", handleBeforeUnload)
+        return () => window.removeEventListener("beforeunload", handleBeforeUnload)
+    }, [hasUnsavedChanges])
+
+    // Check session on mount
+    useEffect(() => {
+        const session = localStorage.getItem("admin_session")
+        if (session) {
+            const { timestamp } = JSON.parse(session)
+            const now = Date.now()
+            const fiveMinutes = 5 * 60 * 1000
+
+            if (now - timestamp < fiveMinutes) {
+                setIsAuthenticated(true)
+            } else {
+                localStorage.removeItem("admin_session")
+            }
+        }
+    }, [])
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -31,6 +63,9 @@ export default function AdminDashboard() {
             const isValid = await verifyAdminPassword(password)
             if (isValid) {
                 setIsAuthenticated(true)
+                // Store session timestamp
+                localStorage.setItem("admin_session", JSON.stringify({ timestamp: Date.now() }))
+                setLastSavedData(JSON.stringify(data))
                 toast.success("Welcome, Omar!")
             } else {
                 toast.error("Invalid password")
@@ -43,11 +78,20 @@ export default function AdminDashboard() {
     }
 
     const handleSave = async () => {
+        const confirmMsg = syncMode === "local"
+            ? "Save changes to local disk?"
+            : "Are you sure you want to push these changes to GitHub? This will redeploy your live site."
+
+        if (!window.confirm(confirmMsg)) return
+
         setIsSaving(true)
         try {
-            const result = await updatePortfolioData(data)
+            const result = await updatePortfolioData(data, syncMode === "local")
             if (result.success) {
-                toast.success("Portfolio updated successfully!")
+                toast.success(result.isLocal ? "Saved locally!" : "Portfolio updated on GitHub!")
+                // Refresh session on successful save
+                localStorage.setItem("admin_session", JSON.stringify({ timestamp: Date.now() }))
+                setLastSavedData(JSON.stringify(data))
             } else {
                 toast.error("Failed to update: " + result.error)
             }
@@ -125,11 +169,40 @@ export default function AdminDashboard() {
                         <span className="font-bold text-xl tracking-tight">PortfoliEditor</span>
                     </div>
                     <div className="flex items-center gap-4">
+                        {process.env.NODE_ENV === "development" && (
+                            <div className="flex bg-zinc-900 border border-zinc-800 rounded-lg p-0.5">
+                                <Button
+                                    size="sm"
+                                    variant={syncMode === "local" ? "secondary" : "ghost"}
+                                    onClick={() => setSyncMode("local")}
+                                    className="h-7 px-2 text-xs"
+                                >
+                                    Local
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    variant={syncMode === "github" ? "secondary" : "ghost"}
+                                    onClick={() => setSyncMode("github")}
+                                    className="h-7 px-2 text-xs"
+                                >
+                                    GitHub
+                                </Button>
+                            </div>
+                        )}
                         <Button
                             variant="outline"
                             size="sm"
                             className="border-zinc-800 hover:bg-zinc-900"
-                            onClick={() => setIsAuthenticated(false)}
+                            onClick={() => {
+                                const confirmMsg = hasUnsavedChanges
+                                    ? "You have unsaved changes! Are you sure you want to sign out? Your changes will be lost."
+                                    : "Are you sure you want to sign out?"
+
+                                if (window.confirm(confirmMsg)) {
+                                    setIsAuthenticated(false)
+                                    localStorage.removeItem("admin_session")
+                                }
+                            }}
                         >
                             <LogOut className="w-4 h-4 mr-2" />
                             Sign Out
@@ -143,7 +216,7 @@ export default function AdminDashboard() {
                             ) : (
                                 <>
                                     <Save className="w-4 h-4 mr-2" />
-                                    Save Changes
+                                    {syncMode === "local" ? "Save Locally" : "Save Changes"}
                                 </>
                             )}
                         </Button>
@@ -215,8 +288,10 @@ export default function AdminDashboard() {
                                                         variant="secondary"
                                                         size="sm"
                                                         onClick={() => {
-                                                            const newRoles = [...data.hero.roles, "New Role"]
-                                                            setData({ ...data, hero: { ...data.hero, roles: newRoles } })
+                                                            if (window.confirm("Add a new role?")) {
+                                                                const newRoles = [...data.hero.roles, "New Role"]
+                                                                setData({ ...data, hero: { ...data.hero, roles: newRoles } })
+                                                            }
                                                         }}
                                                     >
                                                         <Plus className="w-4 h-4 mr-2" /> Add Role
@@ -238,8 +313,10 @@ export default function AdminDashboard() {
                                                                 variant="destructive"
                                                                 size="icon"
                                                                 onClick={() => {
-                                                                    const newRoles = data.hero.roles.filter((_, i) => i !== idx)
-                                                                    setData({ ...data, hero: { ...data.hero, roles: newRoles } })
+                                                                    if (window.confirm("Delete this role?")) {
+                                                                        const newRoles = data.hero.roles.filter((_, i) => i !== idx)
+                                                                        setData({ ...data, hero: { ...data.hero, roles: newRoles } })
+                                                                    }
                                                                 }}
                                                             >
                                                                 <Trash2 className="w-4 h-4" />
@@ -256,8 +333,10 @@ export default function AdminDashboard() {
                                                         variant="secondary"
                                                         size="sm"
                                                         onClick={() => {
-                                                            const newLinks = [...data.hero.socialLinks, { label: "New", href: "#", icon: "Link" }]
-                                                            setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
+                                                            if (window.confirm("Add a new social link?")) {
+                                                                const newLinks = [...data.hero.socialLinks, { label: "New", href: "#", icon: "Link" }]
+                                                                setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
+                                                            }
                                                         }}
                                                     >
                                                         <Plus className="w-4 h-4 mr-2" /> Add Link
@@ -307,8 +386,10 @@ export default function AdminDashboard() {
                                                                     variant="destructive"
                                                                     size="icon"
                                                                     onClick={() => {
-                                                                        const newLinks = data.hero.socialLinks.filter((_, i) => i !== idx)
-                                                                        setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
+                                                                        if (window.confirm("Delete this social link?")) {
+                                                                            const newLinks = data.hero.socialLinks.filter((_, i) => i !== idx)
+                                                                            setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
+                                                                        }
                                                                     }}
                                                                 >
                                                                     <Trash2 className="w-4 h-4" />
@@ -334,15 +415,17 @@ export default function AdminDashboard() {
                                     <div className="flex justify-end">
                                         <Button
                                             onClick={() => {
-                                                const newExp = {
-                                                    title: "New Position",
-                                                    company: "Company Name",
-                                                    period: "2024 - Present",
-                                                    location: "Remote",
-                                                    description: ["Did awesome things"],
-                                                    current: true
+                                                if (window.confirm("Add a new experience entry?")) {
+                                                    const newExp = {
+                                                        title: "New Position",
+                                                        company: "Company Name",
+                                                        period: "2024 - Present",
+                                                        location: "Remote",
+                                                        description: ["Did awesome things"],
+                                                        current: true
+                                                    }
+                                                    setData({ ...data, experience: [newExp, ...data.experience] })
                                                 }
-                                                setData({ ...data, experience: [newExp, ...data.experience] })
                                             }}
                                         >
                                             <Plus className="w-4 h-4 mr-2" /> Add Experience
@@ -361,8 +444,10 @@ export default function AdminDashboard() {
                                                     size="icon"
                                                     className="text-zinc-500 hover:text-red-400"
                                                     onClick={() => {
-                                                        const newExp = data.experience.filter((_, i) => i !== idx)
-                                                        setData({ ...data, experience: newExp })
+                                                        if (window.confirm("Are you sure you want to delete this experience entry?")) {
+                                                            const newExp = data.experience.filter((_, i) => i !== idx)
+                                                            setData({ ...data, experience: newExp })
+                                                        }
                                                     }}
                                                 >
                                                     <Trash2 className="w-4 h-4" />
@@ -424,22 +509,24 @@ export default function AdminDashboard() {
                                     <div className="flex justify-end">
                                         <Button
                                             onClick={() => {
-                                                const newProject = {
-                                                    id: Date.now(),
-                                                    title: "New Project",
-                                                    category: "Web Development",
-                                                    description: "Short description",
-                                                    longDescription: "Detailed description",
-                                                    technologies: ["React"],
-                                                    features: ["Responsive design"],
-                                                    icon: "Zap",
-                                                    color: "from-blue-500 to-indigo-600",
-                                                    images: [],
-                                                    demoUrl: "#",
-                                                    githubUrl: "#",
-                                                    status: "In Progress"
+                                                if (window.confirm("Add a new project entry?")) {
+                                                    const newProject = {
+                                                        id: Date.now(),
+                                                        title: "New Project",
+                                                        category: "Web Development",
+                                                        description: "Short description",
+                                                        longDescription: "Detailed description",
+                                                        technologies: ["React"],
+                                                        features: ["Responsive design"],
+                                                        icon: "Zap",
+                                                        color: "from-blue-500 to-indigo-600",
+                                                        images: [],
+                                                        demoUrl: "#",
+                                                        githubUrl: "#",
+                                                        status: "In Progress"
+                                                    }
+                                                    setData({ ...data, projects: [newProject, ...data.projects] })
                                                 }
-                                                setData({ ...data, projects: [newProject, ...data.projects] })
                                             }}
                                         >
                                             <Plus className="w-4 h-4 mr-2" /> Add Project
@@ -458,8 +545,10 @@ export default function AdminDashboard() {
                                                             size="icon"
                                                             className="text-zinc-500 hover:text-red-400"
                                                             onClick={() => {
-                                                                const newProjects = data.projects.filter((_, i) => i !== idx)
-                                                                setData({ ...data, projects: newProjects })
+                                                                if (window.confirm("Are you sure you want to delete this project? This cannot be undone.")) {
+                                                                    const newProjects = data.projects.filter((_, i) => i !== idx)
+                                                                    setData({ ...data, projects: newProjects })
+                                                                }
                                                             }}
                                                         >
                                                             <Trash2 className="w-4 h-4" />

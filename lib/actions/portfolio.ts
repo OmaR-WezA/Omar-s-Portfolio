@@ -3,6 +3,8 @@
 import { Octokit } from "octokit"
 import { PortfolioData } from "@/types/portfolio"
 import { revalidatePath } from "next/cache"
+import fs from "fs"
+import path from "path"
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN
 const GITHUB_REPO = process.env.GITHUB_REPO // Format: "owner/repo"
@@ -17,8 +19,15 @@ export async function verifyAdminPassword(password: string) {
     return password === ADMIN_PASSWORD
 }
 
-export async function updatePortfolioData(newData: PortfolioData) {
+export async function updatePortfolioData(newData: PortfolioData, saveLocally: boolean = false) {
     try {
+        if (saveLocally) {
+            const fullPath = path.join(process.cwd(), DATA_PATH)
+            fs.writeFileSync(fullPath, JSON.stringify(newData, null, 2))
+            revalidatePath("/")
+            return { success: true, isLocal: true }
+        }
+
         if (!GITHUB_TOKEN || !GITHUB_REPO) {
             throw new Error("Missing GitHub configuration. Please add GITHUB_TOKEN and GITHUB_REPO to your Vercel Environment Variables.")
         }
