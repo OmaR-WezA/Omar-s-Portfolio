@@ -11,11 +11,94 @@ import { Textarea } from "@/components/ui/textarea"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Key, Save, User, Info, Briefcase, Rocket, LogOut, Loader2, Plus, Trash2, ChevronRight, ChevronLeft } from "lucide-react"
+import { Key, Save, User, Info, Briefcase, Rocket, LogOut, Loader2, Plus, Trash2, ChevronRight, ChevronLeft, AlertTriangle, CheckCircle2, X } from "lucide-react"
 import { toast } from "react-hot-toast"
 import { updatePortfolioData, verifyAdminPassword } from "@/lib/actions/portfolio"
 import initialData from "@/data/portfolio-data.json"
 import { PortfolioData } from "@/types/portfolio"
+
+interface ConfirmConfig {
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: "delete" | "save" | "add" | "logout" | "warning";
+    onConfirm: () => void;
+}
+
+const ConfirmDialog = ({ config, onClose }: { config: ConfirmConfig, onClose: () => void }) => {
+    if (!config.isOpen) return null;
+
+    const colors = {
+        delete: "bg-red-500/10 border-red-500/50 text-red-500",
+        save: "bg-blue-500/10 border-blue-500/50 text-blue-500",
+        add: "bg-green-500/10 border-green-500/50 text-green-500",
+        logout: "bg-zinc-500/10 border-zinc-500/50 text-zinc-400",
+        warning: "bg-red-600/20 border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.2)] text-red-500"
+    };
+
+    const icons = {
+        delete: <Trash2 className="w-8 h-8" />,
+        save: <Save className="w-8 h-8" />,
+        add: <Plus className="w-8 h-8" />,
+        logout: <LogOut className="w-8 h-8" />,
+        warning: (
+            <motion.div
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+            >
+                <AlertTriangle className="w-10 h-10" />
+            </motion.div>
+        )
+    };
+
+    return (
+        <AnimatePresence>
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                    className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden"
+                >
+                    <div className={`p-6 flex flex-col items-center text-center space-y-4 border-b border-zinc-800 ${colors[config.type]}`}>
+                        <div className="p-3 rounded-full bg-current/10">
+                            {icons[config.type]}
+                        </div>
+                        <h3 className="text-xl font-bold text-white">{config.title}</h3>
+                    </div>
+                    <div className="p-6">
+                        <p className="text-zinc-400 text-center leading-relaxed">
+                            {config.message}
+                        </p>
+                    </div>
+                    <div className="p-4 bg-zinc-900/50 border-t border-zinc-800 flex gap-3">
+                        <Button
+                            variant="ghost"
+                            className="flex-1 text-zinc-400 hover:text-white hover:bg-zinc-800"
+                            onClick={onClose}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            className={`flex-1 font-semibold ${config.type === 'delete' ? 'bg-red-600 hover:bg-red-700' :
+                                    config.type === 'warning' ? 'bg-red-600 hover:bg-red-700 animate-pulse' :
+                                        config.type === 'save' ? 'bg-blue-600 hover:bg-blue-700' :
+                                            config.type === 'add' ? 'bg-green-600 hover:bg-green-700' :
+                                                'bg-primary hover:bg-primary/90'
+                                }`}
+                            onClick={() => {
+                                config.onConfirm();
+                                onClose();
+                            }}
+                        >
+                            {config.type === 'warning' ? 'Confirm and Lose Changes' : 'Confirm'}
+                        </Button>
+                    </div>
+                </motion.div>
+            </div>
+        </AnimatePresence>
+    );
+};
 
 export default function AdminDashboard() {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -25,6 +108,17 @@ export default function AdminDashboard() {
     const [syncMode, setSyncMode] = useState<"local" | "github">("github")
     const [data, setData] = useState<PortfolioData>(initialData as PortfolioData)
     const [lastSavedData, setLastSavedData] = useState<string>(JSON.stringify(initialData))
+    const [confirm, setConfirm] = useState<ConfirmConfig>({
+        isOpen: false,
+        title: "",
+        message: "",
+        type: "save",
+        onConfirm: () => { }
+    })
+
+    const openConfirm = (config: Omit<ConfirmConfig, "isOpen">) => {
+        setConfirm({ ...config, isOpen: true })
+    }
 
     const hasUnsavedChanges = JSON.stringify(data) !== lastSavedData
 
@@ -78,28 +172,33 @@ export default function AdminDashboard() {
     }
 
     const handleSave = async () => {
-        const confirmMsg = syncMode === "local"
-            ? "Save changes to local disk?"
-            : "Are you sure you want to push these changes to GitHub? This will redeploy your live site."
+        const title = syncMode === "local" ? "Save Locally" : "Sync to GitHub"
+        const message = syncMode === "local"
+            ? "Save current changes to your local file system? This will update your local development data."
+            : "Are you sure you want to push these changes to GitHub? This will trigger a redeploy of your live website."
 
-        if (!window.confirm(confirmMsg)) return
-
-        setIsSaving(true)
-        try {
-            const result = await updatePortfolioData(data, syncMode === "local")
-            if (result.success) {
-                toast.success(result.isLocal ? "Saved locally!" : "Portfolio updated on GitHub!")
-                // Refresh session on successful save
-                localStorage.setItem("admin_session", JSON.stringify({ timestamp: Date.now() }))
-                setLastSavedData(JSON.stringify(data))
-            } else {
-                toast.error("Failed to update: " + result.error)
+        openConfirm({
+            title,
+            message,
+            type: "save",
+            onConfirm: async () => {
+                setIsSaving(true)
+                try {
+                    const result = await updatePortfolioData(data, syncMode === "local")
+                    if (result.success) {
+                        toast.success(result.isLocal ? "Saved locally!" : "Portfolio updated on GitHub!")
+                        localStorage.setItem("admin_session", JSON.stringify({ timestamp: Date.now() }))
+                        setLastSavedData(JSON.stringify(data))
+                    } else {
+                        toast.error("Failed to update: " + result.error)
+                    }
+                } catch (error) {
+                    toast.error("An error occurred")
+                } finally {
+                    setIsSaving(false)
+                }
             }
-        } catch (error) {
-            toast.error("An error occurred")
-        } finally {
-            setIsSaving(false)
-        }
+        })
     }
 
     if (!isAuthenticated) {
@@ -194,14 +293,21 @@ export default function AdminDashboard() {
                             size="sm"
                             className="border-zinc-800 hover:bg-zinc-900"
                             onClick={() => {
-                                const confirmMsg = hasUnsavedChanges
-                                    ? "You have unsaved changes! Are you sure you want to sign out? Your changes will be lost."
-                                    : "Are you sure you want to sign out?"
+                                const title = hasUnsavedChanges ? "Danger: Unsaved Changes" : "Sign Out"
+                                const message = hasUnsavedChanges
+                                    ? "You have unsaved changes! If you sign out now, all your edits will be permanently lost. Are you sure?"
+                                    : "Are you sure you want to sign out and end your session?"
+                                const type = hasUnsavedChanges ? "warning" : "logout"
 
-                                if (window.confirm(confirmMsg)) {
-                                    setIsAuthenticated(false)
-                                    localStorage.removeItem("admin_session")
-                                }
+                                openConfirm({
+                                    title,
+                                    message,
+                                    type,
+                                    onConfirm: () => {
+                                        setIsAuthenticated(false)
+                                        localStorage.removeItem("admin_session")
+                                    }
+                                })
                             }}
                         >
                             <LogOut className="w-4 h-4 mr-2" />
@@ -288,10 +394,15 @@ export default function AdminDashboard() {
                                                         variant="secondary"
                                                         size="sm"
                                                         onClick={() => {
-                                                            if (window.confirm("Add a new role?")) {
-                                                                const newRoles = [...data.hero.roles, "New Role"]
-                                                                setData({ ...data, hero: { ...data.hero, roles: newRoles } })
-                                                            }
+                                                            openConfirm({
+                                                                title: "Add Role",
+                                                                message: "Are you sure you want to add a new role entry?",
+                                                                type: "add",
+                                                                onConfirm: () => {
+                                                                    const newRoles = [...data.hero.roles, "New Role"]
+                                                                    setData({ ...data, hero: { ...data.hero, roles: newRoles } })
+                                                                }
+                                                            })
                                                         }}
                                                     >
                                                         <Plus className="w-4 h-4 mr-2" /> Add Role
@@ -313,10 +424,15 @@ export default function AdminDashboard() {
                                                                 variant="destructive"
                                                                 size="icon"
                                                                 onClick={() => {
-                                                                    if (window.confirm("Delete this role?")) {
-                                                                        const newRoles = data.hero.roles.filter((_, i) => i !== idx)
-                                                                        setData({ ...data, hero: { ...data.hero, roles: newRoles } })
-                                                                    }
+                                                                    openConfirm({
+                                                                        title: "Delete Role",
+                                                                        message: "Are you sure you want to delete this role?",
+                                                                        type: "delete",
+                                                                        onConfirm: () => {
+                                                                            const newRoles = data.hero.roles.filter((_, i) => i !== idx)
+                                                                            setData({ ...data, hero: { ...data.hero, roles: newRoles } })
+                                                                        }
+                                                                    })
                                                                 }}
                                                             >
                                                                 <Trash2 className="w-4 h-4" />
@@ -333,10 +449,15 @@ export default function AdminDashboard() {
                                                         variant="secondary"
                                                         size="sm"
                                                         onClick={() => {
-                                                            if (window.confirm("Add a new social link?")) {
-                                                                const newLinks = [...data.hero.socialLinks, { label: "New", href: "#", icon: "Link" }]
-                                                                setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
-                                                            }
+                                                            openConfirm({
+                                                                title: "Add Social Link",
+                                                                message: "Add a new social media or contact link to your hero section?",
+                                                                type: "add",
+                                                                onConfirm: () => {
+                                                                    const newLinks = [...data.hero.socialLinks, { label: "New", href: "#", icon: "Link" }]
+                                                                    setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
+                                                                }
+                                                            })
                                                         }}
                                                     >
                                                         <Plus className="w-4 h-4 mr-2" /> Add Link
@@ -386,10 +507,15 @@ export default function AdminDashboard() {
                                                                     variant="destructive"
                                                                     size="icon"
                                                                     onClick={() => {
-                                                                        if (window.confirm("Delete this social link?")) {
-                                                                            const newLinks = data.hero.socialLinks.filter((_, i) => i !== idx)
-                                                                            setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
-                                                                        }
+                                                                        openConfirm({
+                                                                            title: "Delete Social Link",
+                                                                            message: "Remove this social link from your portfolio?",
+                                                                            type: "delete",
+                                                                            onConfirm: () => {
+                                                                                const newLinks = data.hero.socialLinks.filter((_, i) => i !== idx)
+                                                                                setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
+                                                                            }
+                                                                        })
                                                                     }}
                                                                 >
                                                                     <Trash2 className="w-4 h-4" />
@@ -415,17 +541,22 @@ export default function AdminDashboard() {
                                     <div className="flex justify-end">
                                         <Button
                                             onClick={() => {
-                                                if (window.confirm("Add a new experience entry?")) {
-                                                    const newExp = {
-                                                        title: "New Position",
-                                                        company: "Company Name",
-                                                        period: "2024 - Present",
-                                                        location: "Remote",
-                                                        description: ["Did awesome things"],
-                                                        current: true
+                                                openConfirm({
+                                                    title: "Add Experience",
+                                                    message: "Create a new professional experience entry?",
+                                                    type: "add",
+                                                    onConfirm: () => {
+                                                        const newExp = {
+                                                            title: "New Position",
+                                                            company: "Company Name",
+                                                            period: "2024 - Present",
+                                                            location: "Remote",
+                                                            description: ["Did awesome things"],
+                                                            current: true
+                                                        }
+                                                        setData({ ...data, experience: [newExp, ...data.experience] })
                                                     }
-                                                    setData({ ...data, experience: [newExp, ...data.experience] })
-                                                }
+                                                })
                                             }}
                                         >
                                             <Plus className="w-4 h-4 mr-2" /> Add Experience
@@ -444,10 +575,15 @@ export default function AdminDashboard() {
                                                     size="icon"
                                                     className="text-zinc-500 hover:text-red-400"
                                                     onClick={() => {
-                                                        if (window.confirm("Are you sure you want to delete this experience entry?")) {
-                                                            const newExp = data.experience.filter((_, i) => i !== idx)
-                                                            setData({ ...data, experience: newExp })
-                                                        }
+                                                        openConfirm({
+                                                            title: "Delete Experience",
+                                                            message: "Are you sure you want to delete this experience entry? This action is permanent local-only until you sync.",
+                                                            type: "delete",
+                                                            onConfirm: () => {
+                                                                const newExp = data.experience.filter((_, i) => i !== idx)
+                                                                setData({ ...data, experience: newExp })
+                                                            }
+                                                        })
                                                     }}
                                                 >
                                                     <Trash2 className="w-4 h-4" />
@@ -509,24 +645,29 @@ export default function AdminDashboard() {
                                     <div className="flex justify-end">
                                         <Button
                                             onClick={() => {
-                                                if (window.confirm("Add a new project entry?")) {
-                                                    const newProject = {
-                                                        id: Date.now(),
-                                                        title: "New Project",
-                                                        category: "Web Development",
-                                                        description: "Short description",
-                                                        longDescription: "Detailed description",
-                                                        technologies: ["React"],
-                                                        features: ["Responsive design"],
-                                                        icon: "Zap",
-                                                        color: "from-blue-500 to-indigo-600",
-                                                        images: [],
-                                                        demoUrl: "#",
-                                                        githubUrl: "#",
-                                                        status: "In Progress"
+                                                openConfirm({
+                                                    title: "Add Project",
+                                                    message: "Would you like to add a new project showcase to your portfolio?",
+                                                    type: "add",
+                                                    onConfirm: () => {
+                                                        const newProject = {
+                                                            id: Date.now(),
+                                                            title: "New Project",
+                                                            category: "Web Development",
+                                                            description: "Short description",
+                                                            longDescription: "Detailed description",
+                                                            technologies: ["React"],
+                                                            features: ["Responsive design"],
+                                                            icon: "Zap",
+                                                            color: "from-blue-500 to-indigo-600",
+                                                            images: [],
+                                                            demoUrl: "#",
+                                                            githubUrl: "#",
+                                                            status: "In Progress"
+                                                        }
+                                                        setData({ ...data, projects: [newProject, ...data.projects] })
                                                     }
-                                                    setData({ ...data, projects: [newProject, ...data.projects] })
-                                                }
+                                                })
                                             }}
                                         >
                                             <Plus className="w-4 h-4 mr-2" /> Add Project
@@ -545,10 +686,15 @@ export default function AdminDashboard() {
                                                             size="icon"
                                                             className="text-zinc-500 hover:text-red-400"
                                                             onClick={() => {
-                                                                if (window.confirm("Are you sure you want to delete this project? This cannot be undone.")) {
-                                                                    const newProjects = data.projects.filter((_, i) => i !== idx)
-                                                                    setData({ ...data, projects: newProjects })
-                                                                }
+                                                                openConfirm({
+                                                                    title: "Delete Project",
+                                                                    message: "Are you sure you want to delete this project? This will remove all associated data and images from the display.",
+                                                                    type: "delete",
+                                                                    onConfirm: () => {
+                                                                        const newProjects = data.projects.filter((_, i) => i !== idx)
+                                                                        setData({ ...data, projects: newProjects })
+                                                                    }
+                                                                })
                                                             }}
                                                         >
                                                             <Trash2 className="w-4 h-4" />
@@ -806,6 +952,11 @@ export default function AdminDashboard() {
                     </Tabs>
                 </div>
             </main>
+
+            <ConfirmDialog
+                config={confirm}
+                onClose={() => setConfirm({ ...confirm, isOpen: false })}
+            />
         </div>
     )
 }
