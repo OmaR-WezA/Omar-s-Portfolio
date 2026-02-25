@@ -155,6 +155,27 @@
   ],
   "projects": [
     {
+      "id": 1771981078827,
+      "title": "Weza",
+      "category": "Web Development",
+      "description": "Short description",
+      "longDescription": "Detailed description",
+      "technologies": [
+        "React"
+      ],
+      "features": [
+        "Responsive design"
+      ],
+      "icon": "Zap",
+      "color": "from-blue-500 to-indigo-600",
+      "images": [
+        "/img/Berimbolo-Security/Home.png"
+      ],
+      "demoUrl": "#",
+      "githubUrl": "#",
+      "status": "In Progress"
+    },
+    {
       "id": 1,
       "title": "Berimbolo Security Website",
       "category": "Web Development",
@@ -197,7 +218,7 @@
     },
     {
       "id": 2,
-      "title": "Tournament Scoring System test global",
+      "title": "Tournament Scoring System",
       "category": "Web Application",
       "description": "Real-time scoring system for university competitions with automated calculations.",
       "longDescription": "Built a comprehensive real-time scoring system for university competitions featuring automated calculations, live updates, and interactive user interface. The system handles multiple tournament formats, provides real-time analytics, and includes comprehensive admin controls for tournament management.",
