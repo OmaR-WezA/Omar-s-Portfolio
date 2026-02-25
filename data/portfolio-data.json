@@ -155,27 +155,6 @@
   ],
   "projects": [
     {
-      "id": 1771981078827,
-      "title": "Weza",
-      "category": "Web Development",
-      "description": "Short description",
-      "longDescription": "Detailed description",
-      "technologies": [
-        "React"
-      ],
-      "features": [
-        "Responsive design"
-      ],
-      "icon": "Zap",
-      "color": "from-blue-500 to-indigo-600",
-      "images": [
-        "/img/Berimbolo-Security/Home.png"
-      ],
-      "demoUrl": "#",
-      "githubUrl": "#",
-      "status": "In Progress"
-    },
-    {
       "id": 1,
       "title": "Berimbolo Security Website",
       "category": "Web Development",
