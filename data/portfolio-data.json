@@ -155,25 +155,6 @@
   ],
   "projects": [
     {
-      "id": 1771981357494,
-      "title": "New Project",
-      "category": "Web Development",
-      "description": "Short description",
-      "longDescription": "Detailed description",
-      "technologies": [
-        "React"
-      ],
-      "features": [
-        "Responsive design"
-      ],
-      "icon": "Zap",
-      "color": "from-blue-500 to-indigo-600",
-      "images": [],
-      "demoUrl": "#",
-      "githubUrl": "#",
-      "status": "In Progress"
-    },
-    {
       "id": 1,
       "title": "Berimbolo Security Website",
       "category": "Web Development",
