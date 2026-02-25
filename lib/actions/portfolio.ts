@@ -6,19 +6,25 @@ import { revalidatePath } from "next/cache"
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN
 const GITHUB_REPO = process.env.GITHUB_REPO // Format: "owner/repo"
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
 const DATA_PATH = "data/portfolio-data.json"
 
-export async function updatePortfolioData(newData: PortfolioData) {
-    if (!GITHUB_TOKEN || !GITHUB_REPO) {
-        throw new Error("Missing GitHub configuration (GITHUB_TOKEN or GITHUB_REPO)")
+export async function verifyAdminPassword(password: string) {
+    if (!ADMIN_PASSWORD) {
+        console.error("ADMIN_PASSWORD not set in environment")
+        return false
     }
+    return password === ADMIN_PASSWORD
+}
 
-    const [owner, repo] = GITHUB_REPO.split("/")
-    const octokit = new Octokit({ auth: GITHUB_TOKEN })
-
-    console.log(`Syncing to: ${owner}/${repo} at ${DATA_PATH}`)
-
+export async function updatePortfolioData(newData: PortfolioData) {
     try {
+        if (!GITHUB_TOKEN || !GITHUB_REPO) {
+            throw new Error("Missing GitHub configuration. Please add GITHUB_TOKEN and GITHUB_REPO to your Vercel Environment Variables.")
+        }
+
+        const [owner, repo] = GITHUB_REPO.split("/")
+        const octokit = new Octokit({ auth: GITHUB_TOKEN })
         let sha: string | undefined
 
         try {

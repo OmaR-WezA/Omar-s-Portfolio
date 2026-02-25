@@ -13,26 +13,32 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Key, Save, User, Info, Briefcase, Rocket, LogOut, Loader2, Plus, Trash2, ChevronRight, ChevronLeft } from "lucide-react"
 import { toast } from "react-hot-toast"
-import { updatePortfolioData } from "@/lib/actions/portfolio"
+import { updatePortfolioData, verifyAdminPassword } from "@/lib/actions/portfolio"
 import initialData from "@/data/portfolio-data.json"
 import { PortfolioData } from "@/types/portfolio"
-
-// Basic auth (Client-side for demo, will check env on server)
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123"
 
 export default function AdminDashboard() {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [password, setPassword] = useState("")
     const [isSaving, setIsSaving] = useState(false)
+    const [isLoggingIn, setIsLoggingIn] = useState(false)
     const [data, setData] = useState<PortfolioData>(initialData as PortfolioData)
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (password === ADMIN_PASSWORD) {
-            setIsAuthenticated(true)
-            toast.success("Welcome, Omar!")
-        } else {
-            toast.error("Invalid password")
+        setIsLoggingIn(true)
+        try {
+            const isValid = await verifyAdminPassword(password)
+            if (isValid) {
+                setIsAuthenticated(true)
+                toast.success("Welcome, Omar!")
+            } else {
+                toast.error("Invalid password")
+            }
+        } catch (error) {
+            toast.error("Authentication error")
+        } finally {
+            setIsLoggingIn(false)
         }
     }
 
@@ -86,9 +92,18 @@ export default function AdminDashboard() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button type="submit" className="w-full group">
-                                    Login
-                                    <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                <Button type="submit" className="w-full group" disabled={isLoggingIn}>
+                                    {isLoggingIn ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                            Logging in...
+                                        </>
+                                    ) : (
+                                        <>
+                                            Login
+                                            <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        </>
+                                    )}
                                 </Button>
                             </CardFooter>
                         </form>

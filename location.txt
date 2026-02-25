@@ -1,1 +1,5 @@
-This Project is located at D:\Portfolio\Omar's-Portfolio
+This Project is located at D:\Portfolio\Omar's-Portfolio.
+
+This commit "	
+Improving SEO, Performance, update on design and UI"
+is for coding and manual adding data.
