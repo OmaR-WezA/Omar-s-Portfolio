@@ -78,3 +78,70 @@ export async function updatePortfolioData(newData: PortfolioData, saveLocally: b
         }
     }
 }
+
+export async function getImageAssets() {
+    try {
+        const publicDir = path.join(process.cwd(), "public")
+        const imgDir = path.join(publicDir, "img")
+
+        if (!fs.existsSync(imgDir)) {
+            return []
+        }
+
+        const files: string[] = []
+
+        function traverse(dir: string) {
+            const list = fs.readdirSync(dir)
+            list.forEach(file => {
+                const fullPath = path.join(dir, file)
+                const stat = fs.statSync(fullPath)
+                if (stat.isDirectory()) {
+                    traverse(fullPath)
+                } else {
+                    // Only include common image extensions
+                    if (/\.(jpg|jpeg|png|gif|webp|svg|ico)$/i.test(file)) {
+                        // Normalize to web paths starting with /img
+                        const relativePath = path.relative(publicDir, fullPath).replace(/\\/g, "/")
+                        files.push("/" + relativePath)
+                    }
+                }
+            })
+        }
+
+        traverse(imgDir)
+        return files.sort()
+    } catch (error) {
+        console.error("Error listing images:", error)
+        return []
+    }
+}
+
+export async function uploadImage(base64Data: string, fileName: string) {
+    try {
+        // Create uploads directory if it doesn't exist
+        const uploadDir = path.join(process.cwd(), "public", "img", "uploads")
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true })
+        }
+
+        // Clean up base64 string
+        const base64Content = base64Data.replace(/^data:image\/\w+;base64,/, "")
+        const buffer = Buffer.from(base64Content, "base64")
+        
+        // Ensure unique filename
+        const ext = path.extname(fileName) || ".png"
+        const nameWithoutExt = path.basename(fileName, ext)
+        const uniqueName = `${nameWithoutExt}-${Date.now()}${ext}`
+        const filePath = path.join(uploadDir, uniqueName)
+        
+        fs.writeFileSync(filePath, buffer)
+        
+        return { 
+            success: true, 
+            path: `/img/uploads/${uniqueName}` 
+        }
+    } catch (error: any) {
+        console.error("Upload Error:", error)
+        return { success: false, error: error.message }
+    }
+}

@@ -40,6 +40,7 @@ export interface ExperienceData {
     description: string[];
     current: boolean;
     isBusiness?: boolean;
+    isProjectBased?: boolean;
 }
 
 export interface ProjectData {

@@ -49,16 +49,16 @@ const Skills = () => {
       color: "from-indigo-500 to-blue-500",
     },
     {
-      title: "Software Engineering",
-      icon: <Bug className="w-6 h-6" />,
-      skills: ["Testing", "Design Patterns", "SDLC", "Version Control"],
-      color: "from-yellow-500 to-amber-500",
-    },
-    {
       title: "GUI Development",
       icon: <Layout className="w-6 h-6" />,
       skills: ["Tkinter"],
       color: "from-primary/70 to-primary/30",
+    },
+    {
+      title: "Software Engineering",
+      icon: <Bug className="w-6 h-6" />,
+      skills: ["Testing", "Design Patterns", "SDLC", "Version Control"],
+      color: "from-yellow-500 to-amber-500",
     },
     {
       title: "Networking",
@@ -103,16 +103,12 @@ const Skills = () => {
         </motion.div>
 
         {/* Skills Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-4 mb-16 px-2">
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-6 mb-16 px-2">
           {skillCategories.map((category, index) => {
-            // Balanced Bento spans
             let spans = "lg:col-span-4"
-            if (index === 0) spans = "lg:col-span-6 lg:row-span-1" // Front-End
-            if (index === 1) spans = "lg:col-span-3 lg:row-span-1" // Back-End
-            if (index === 2) spans = "lg:col-span-3 lg:row-span-1" // Soft Skills
-            if (index === 3) spans = "lg:col-span-3 lg:row-span-1" // DB
-            if (index === 4) spans = "lg:col-span-4 lg:row-span-1" // Tech Support
-            if (index === 5) spans = "lg:col-span-5 lg:row-span-1" // Creative
+            if (index === 0 || index === 1) spans = "lg:col-span-6"
+            else if (index >= 2 && index <= 7) spans = "lg:col-span-4"
+            else if (index === 8 || index === 9) spans = "lg:col-span-6"
 
             return (
               <motion.div

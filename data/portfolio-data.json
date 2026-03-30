@@ -3,9 +3,9 @@
     "name": "Omar Mohamed Fahem",
     "roles": [
       "Full Stack Developer",
-      "Creative Entrepreneur",
       "AI Innovator",
-      "Video Production Lead"
+      "Graphic Designer",
+      "Video Producer"
     ],
     "description": "Bridging the gap between cutting-edge tech and meaningful design. Founder of Weza Production.",
     "socialLinks": [
@@ -113,6 +113,20 @@
       "isBusiness": true
     },
     {
+      "title": "Full-Stack Developer",
+      "company": "The Transformix Solutions",
+      "period": "Jan 2025 - Feb 2025",
+      "location": "Alex, Egypt",
+      "description": [
+        "Designed and developed the full‑stack web application Faheem — a complete responsive platform with both front‑end and back‑end functionality.",
+        "Translated the official Transformellica platform into Arabic, improving accessibility for local users and enhancing usability for Arabic‑speaking audiences.",
+        "Collaborated in the QX project presented at the Benha National University event, contributing to both technical implementation and live demonstration readiness.",
+        "Worked across the full development cycle including UI/UX implementation, API integration, multilingual content delivery, and performance optimization."
+      ],
+      "current": false,
+      "isProjectBased": true
+    },
+    {
       "title": "IT Technical Support – Team Lead",
       "company": "Ministry of Youth and Sports via Kayani Organization",
       "period": "Apr 2024 - Aug 2025",
@@ -155,6 +169,59 @@
   ],
   "projects": [
     {
+      "id": 1774827287980,
+      "title": "Faheem",
+      "category": "Web Application",
+      "description": "Faheem is an AI-powered chatbot.",
+      "longDescription": "Faheem is an AI-powered chatbot platform designed to provide seamless user interaction and intelligent assistance for clients. Developed as a production-ready web application, it integrates modern AI technology with a secure and responsive web interface.",
+      "technologies": [
+        "Next",
+        "Node",
+        "PostgreSQL",
+        "MySQL",
+        "WebSocket",
+        "Tailwind"
+      ],
+      "layoutSections": [
+        "Home",
+        "Pricing",
+        "Dashboard",
+        "Inbox",
+        "Profile",
+        "Channels",
+        "Settings",
+        "Knowledge Base",
+        "New Bot"
+      ],
+      "features": [
+        "Advanced AI & NLP Integration: Enables natural and contextual conversation flow.",
+        "Responsive Design: Optimized for desktop, tablet, and mobile devices.",
+        "Modern UI/UX: Clean interface with smooth animations and interactive elements.",
+        "Backend Architecture: Robust API and server-side logic ensuring high performance.",
+        "Database Integration: Secure queries and structured data storage for user interactions.",
+        "Performance Optimization: Efficient caching, asynchronous requests, and minimal load times.",
+        "Admin Dashboard: Manage conversations, users, and system settings with role-based access control.",
+        "Security Implementation: End-to-end encryption and secure authentication for sensitive data."
+      ],
+      "icon": "MessageSquare",
+      "color": "from-amber-500/80 to-amber-500/40",
+      "images": [
+        "/img/Faheem/Home.png",
+        "/img/Faheem/Home_ar.png",
+        "/img/Faheem/About.png",
+        "/img/Faheem/Dashboard.png",
+        "/img/Faheem/Inbox.png",
+        "/img/Faheem/channel_ar.png",
+        "/img/Faheem/profile_ar.png",
+        "/img/Faheem/profile.png",
+        "/img/Faheem/New_Bot.png",
+        "/img/Faheem/setting.png"
+      ],
+      "demoUrl": "https://faheem.app/",
+      "githubUrl": "#",
+      "status": "Completed"
+    },
+    {
       "id": 1,
       "title": "Berimbolo Security Website",
       "category": "Web Development",
@@ -182,7 +249,7 @@
         "Admin dashboard with role management"
       ],
       "icon": "Shield",
-      "color": "from-primary/70 to-primary/30",
+      "color": "from-emerald-500/80 to-emerald-500/40",
       "images": [
         "/img/Berimbolo-Security/Home.png",
         "/img/Berimbolo-Security/Service.png",
@@ -224,7 +291,7 @@
         "Mobile-responsive interface"
       ],
       "icon": "Trophy",
-      "color": "from-primary/80 to-primary/40",
+      "color": "from-emerald-500/80 to-emerald-500/40",
       "images": [
         "/img/Tournament-Scoring-System/dashboard1.png",
         "/img/Tournament-Scoring-System/Manage-Participants.jpg",
@@ -265,7 +332,7 @@
         "Tournament bracket visualization"
       ],
       "icon": "Zap",
-      "color": "from-teal-600 to-cyan-500",
+      "color": "from-cyan-500/80 to-cyan-500/40",
       "images": [
         "/img/School-Tournament-Website/WE-League/Home.jpg",
         "/img/School-Tournament-Website/WE-League/Standing.jpg",
@@ -309,7 +376,7 @@
         "Weather Humidity Sensor: Monitors air humidity to help reduce unnecessary watering during humid conditions"
       ],
       "icon": "Leaf",
-      "color": "from-green-600 to-lime-500",
+      "color": "from-red-500/80 to-red-500/40",
       "images": [
         "/img/agri-img/control.png",
         "/img/agri-img/home.png",
@@ -344,7 +411,7 @@
         "Predictive maintenance alerts"
       ],
       "icon": "Sun",
-      "color": "from-yellow-500 to-orange-500",
+      "color": "from-amber-500/80 to-amber-500/40",
       "images": [
         "/img/SunBusters/model-3.jpg",
         "/img/SunBusters/model-2.jpg",
@@ -387,7 +454,7 @@
         "Mobile-responsive and secure platform"
       ],
       "icon": "Wrench",
-      "color": "from-emerald-700 to-slate-600",
+      "color": "from-indigo-500/80 to-indigo-500/40",
       "images": [
         "/img/Dern-Support/demo.png",
         "/img/Dern-Support/demo1.png",
@@ -433,7 +500,7 @@
         "User-friendly interface with error handling"
       ],
       "icon": "/img/icon/icon.ico",
-      "color": "from-green-500 to-teal-500",
+      "color": "from-emerald-500/80 to-emerald-500/40",
       "images": [
         "/img/WhatsApp-Weza-Sender/image.png",
         "/img/WhatsApp-Weza-Sender/image-1.png",

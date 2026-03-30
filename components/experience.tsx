@@ -8,7 +8,16 @@ import data from "@/data/portfolio-data.json"
 import { ExperienceData } from "@/types/portfolio"
 
 const Experience = () => {
-  const experiences = data.experience as ExperienceData[]
+  const experiences = (data.experience as ExperienceData[]).sort((a, b) => {
+    if (a.current && !b.current) return -1;
+    if (!a.current && b.current) return 1;
+
+    const getYear = (p: string) => {
+      const match = p.match(/\d{4}/);
+      return match ? parseInt(match[0]) : 0;
+    };
+    return getYear(b.period) - getYear(a.period);
+  })
 
   return (
     <section id="experience" className="py-20 bg-muted/30">
@@ -54,6 +63,11 @@ const Experience = () => {
                         {exp.current && (
                           <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${exp.isBusiness ? "bg-primary/20 text-primary border border-primary/20 shadow-sm" : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"}`}>
                             {exp.isBusiness ? "My Business" : "Current Position"}
+                          </span>
+                        )}
+                        {exp.isProjectBased && (
+                          <span className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                            Project Based
                           </span>
                         )}
                       </div>

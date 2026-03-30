@@ -11,9 +11,53 @@ import { Textarea } from "@/components/ui/textarea"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Key, Save, User, Info, Briefcase, Rocket, LogOut, Loader2, Plus, Trash2, ChevronRight, ChevronLeft, AlertTriangle, CheckCircle2, X } from "lucide-react"
+import {
+    Save,
+    LogOut,
+    Loader2,
+    Plus,
+    Trash2,
+    User,
+    Briefcase,
+    Rocket,
+    Info,
+    ChevronRight,
+    Key,
+    Zap,
+    Github,
+    Linkedin,
+    Mail,
+    Phone,
+    Link,
+    Search,
+    Image as ImageIcon,
+    Copy,
+    CheckCircle2,
+    ChevronLeft,
+    AlertTriangle,
+    X,
+    Star,
+    MessageSquare,
+    Heart,
+    Terminal,
+    Cpu,
+    Palette,
+    Globe,
+    Monitor,
+    Smartphone,
+    Layers,
+    Code,
+    Database,
+    Server,
+    Shield,
+    Cloud,
+    Activity,
+    HardDrive,
+    Wifi,
+    Layout
+} from "lucide-react"
 import { toast } from "react-hot-toast"
-import { updatePortfolioData, verifyAdminPassword } from "@/lib/actions/portfolio"
+import { updatePortfolioData, verifyAdminPassword, getImageAssets } from "@/lib/actions/portfolio"
 import initialData from "@/data/portfolio-data.json"
 import { PortfolioData } from "@/types/portfolio"
 
@@ -81,10 +125,10 @@ const ConfirmDialog = ({ config, onClose }: { config: ConfirmConfig, onClose: ()
                         </Button>
                         <Button
                             className={`flex-1 font-semibold ${config.type === 'delete' ? 'bg-red-600 hover:bg-red-700' :
-                                    config.type === 'warning' ? 'bg-red-600 hover:bg-red-700 animate-pulse' :
-                                        config.type === 'save' ? 'bg-blue-600 hover:bg-blue-700' :
-                                            config.type === 'add' ? 'bg-green-600 hover:bg-green-700' :
-                                                'bg-primary hover:bg-primary/90'
+                                config.type === 'warning' ? 'bg-red-600 hover:bg-red-700 animate-pulse' :
+                                    config.type === 'save' ? 'bg-blue-600 hover:bg-blue-700' :
+                                        config.type === 'add' ? 'bg-green-600 hover:bg-green-700' :
+                                            'bg-primary hover:bg-primary/90'
                                 }`}
                             onClick={() => {
                                 config.onConfirm();
@@ -100,12 +144,182 @@ const ConfirmDialog = ({ config, onClose }: { config: ConfirmConfig, onClose: ()
     );
 };
 
+const ICON_MAP = {
+    Rocket: <Rocket className="w-4 h-4" />,
+    Code: <Code className="w-4 h-4" />,
+    Terminal: <Terminal className="w-4 h-4" />,
+    Cpu: <Cpu className="w-4 h-4" />,
+    Database: <Database className="w-4 h-4" />,
+    Server: <Server className="w-4 h-4" />,
+    Globe: <Globe className="w-4 h-4" />,
+    Smartphone: <Smartphone className="w-4 h-4" />,
+    Layers: <Layers className="w-4 h-4" />,
+    Shield: <Shield className="w-4 h-4" />,
+    Zap: <Zap className="w-4 h-4" />,
+    Github: <Github className="w-4 h-4" />,
+    Linkedin: <Linkedin className="w-4 h-4" />,
+    Mail: <Mail className="w-4 h-4" />,
+    Monitor: <Monitor className="w-4 h-4" />,
+    Cloud: <Cloud className="w-4 h-4" />,
+    Activity: <Activity className="w-4 h-4" />,
+    HardDrive: <HardDrive className="w-4 h-4" />,
+    Wifi: <Wifi className="w-4 h-4" />,
+    Layout: <Layout className="w-4 h-4" />,
+    Palette: <Palette className="w-4 h-4" />,
+    MessageSquare: <MessageSquare className="w-4 h-4" />,
+    Star: <Star className="w-4 h-4" />,
+    Link: <Link className="w-4 h-4" />
+};
+
+const IconSelector = ({ value, onChange }: { value: string, onChange: (val: string) => void }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <div className="relative">
+            <button
+                type="button"
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-md h-10 px-3 flex items-center justify-between text-sm hover:border-primary/50 transition-colors"
+            >
+                <div className="flex items-center gap-2">
+                    <span className="text-primary">
+                        {ICON_MAP[value as keyof typeof ICON_MAP] || <Link className="w-4 h-4" />}
+                    </span>
+                    <span className="text-zinc-200">{value}</span>
+                </div>
+                <ChevronRight className={`w-4 h-4 text-zinc-500 transition-transform ${isOpen ? "rotate-90" : ""}`} />
+            </button>
+
+            <AnimatePresence>
+                {isOpen && (
+                    <>
+                        <div className="fixed inset-0 z-[110]" onClick={() => setIsOpen(false)} />
+                        <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                            className="absolute bottom-full mb-2 left-0 w-full bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl z-[120] max-h-[300px] overflow-y-auto p-1 custom-scrollbar"
+                        >
+                            <div className="grid grid-cols-1 gap-1">
+                                {Object.keys(ICON_MAP).map((icon) => (
+                                    <button
+                                        key={icon}
+                                        type="button"
+                                        onClick={() => {
+                                            onChange(icon);
+                                            setIsOpen(false);
+                                        }}
+                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${value === icon
+                                            ? "bg-primary text-white"
+                                            : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                                            }`}
+                                    >
+                                        <div className={value === icon ? "text-white" : "text-primary"}>
+                                            {ICON_MAP[icon as keyof typeof ICON_MAP]}
+                                        </div>
+                                        <span>{icon}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
+const ColorSelector = ({ value, onChange }: { value: string, onChange: (val: string) => void }) => {
+    const colors = [
+        { label: "Blue", value: "from-blue-500/80 to-blue-500/40" },
+        { label: "Emerald", value: "from-emerald-500/80 to-emerald-500/40" },
+        { label: "Purple", value: "from-purple-500/80 to-purple-500/40" },
+        { label: "Amber", value: "from-amber-500/80 to-amber-500/40" },
+        { label: "Red", value: "from-red-500/80 to-red-500/40" },
+        { label: "Indigo", value: "from-indigo-500/80 to-indigo-500/40" },
+        { label: "Rose", value: "from-rose-500/80 to-rose-500/40" },
+        { label: "Cyan", value: "from-cyan-500/80 to-cyan-500/40" },
+    ];
+
+    return (
+        <div className="grid grid-cols-4 gap-2">
+            {colors.map((c) => (
+                <button
+                    key={c.value}
+                    type="button"
+                    onClick={() => onChange(c.value)}
+                    className={`h-8 rounded-md border transition-all ${value === c.value ? "border-white ring-2 ring-primary/20" : "border-transparent"
+                        } bg-gradient-to-br ${c.value}`}
+                    title={c.label}
+                />
+            ))}
+        </div>
+    );
+};
+
+const StatusSelector = ({ value, onChange, options }: { value: string, onChange: (val: string) => void, options: string[] }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <div className="relative">
+            <button
+                type="button"
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-md h-10 px-3 flex items-center justify-between text-sm hover:border-primary/50 transition-colors"
+            >
+                <span className="text-zinc-200">{value}</span>
+                <ChevronRight className={`w-4 h-4 text-zinc-500 transition-transform ${isOpen ? "rotate-90" : ""}`} />
+            </button>
+
+            <AnimatePresence>
+                {isOpen && (
+                    <>
+                        <div className="fixed inset-0 z-[110]" onClick={() => setIsOpen(false)} />
+                        <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                            className="absolute bottom-full mb-2 left-0 w-full bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl z-[120] p-1"
+                        >
+                            <div className="grid grid-cols-1 gap-1">
+                                {options.map((opt) => (
+                                    <button
+                                        key={opt}
+                                        type="button"
+                                        onClick={() => {
+                                            onChange(opt);
+                                            setIsOpen(false);
+                                        }}
+                                        className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${value === opt
+                                            ? "bg-primary text-white"
+                                            : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                                            }`}
+                                    >
+                                        {opt}
+                                    </button>
+                                ))}
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
 export default function AdminDashboard() {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [password, setPassword] = useState("")
     const [isSaving, setIsSaving] = useState(false)
     const [isLoggingIn, setIsLoggingIn] = useState(false)
     const [syncMode, setSyncMode] = useState<"local" | "github">("github")
+    const [imageAssets, setImageAssets] = useState<string[]>([])
+    const [assetContext, setAssetContext] = useState<{
+        isOpen: boolean;
+        type: "project" | "general" | "hero" | "about";
+        id?: string | number;
+    }>({ isOpen: false, type: "general" })
+    const [searchAsset, setSearchAsset] = useState("")
     const [data, setData] = useState<PortfolioData>(initialData as PortfolioData)
     const [lastSavedData, setLastSavedData] = useState<string>(JSON.stringify(initialData))
     const [confirm, setConfirm] = useState<ConfirmConfig>({
@@ -136,18 +350,20 @@ export default function AdminDashboard() {
 
     // Check session on mount
     useEffect(() => {
-        const session = localStorage.getItem("admin_session")
-        if (session) {
-            const { timestamp } = JSON.parse(session)
-            const now = Date.now()
-            const fiveMinutes = 5 * 60 * 1000
-
-            if (now - timestamp < fiveMinutes) {
+        const sessionStr = localStorage.getItem("admin_session")
+        if (sessionStr) {
+            const session = JSON.parse(sessionStr)
+            if (Date.now() - session.timestamp < 1000 * 60 * 60) {
                 setIsAuthenticated(true)
-            } else {
-                localStorage.removeItem("admin_session")
             }
         }
+
+        // Fetch image assets
+        const fetchAssets = async () => {
+            const assets = await getImageAssets()
+            setImageAssets(assets)
+        }
+        fetchAssets()
     }, [])
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -184,11 +400,26 @@ export default function AdminDashboard() {
             onConfirm: async () => {
                 setIsSaving(true)
                 try {
-                    const result = await updatePortfolioData(data, syncMode === "local")
+                    // Sort experiences before saving (Current first, then by year)
+                    const sortedExperience = [...data.experience].sort((a, b) => {
+                        if (a.current && !b.current) return -1
+                        if (!a.current && b.current) return 1
+
+                        const getYear = (p: string) => {
+                            const match = p.match(/\d{4}/)
+                            return match ? parseInt(match[0]) : 0
+                        }
+                        return getYear(b.period) - getYear(a.period)
+                    })
+
+                    const dataToSave = { ...data, experience: sortedExperience }
+                    const result = await updatePortfolioData(dataToSave, syncMode === "local")
+
                     if (result.success) {
                         toast.success(result.isLocal ? "Saved locally!" : "Portfolio updated on GitHub!")
                         localStorage.setItem("admin_session", JSON.stringify({ timestamp: Date.now() }))
-                        setLastSavedData(JSON.stringify(data))
+                        setLastSavedData(JSON.stringify(dataToSave)) // Use dataToSave so we reflect sorted order
+                        setData(dataToSave) // Update UI to sorted order after save
                     } else {
                         toast.error("Failed to update: " + result.error)
                     }
@@ -491,35 +722,37 @@ export default function AdminDashboard() {
                                                                 />
                                                             </div>
                                                             <div className="flex gap-2">
-                                                                <div className="flex-grow">
-                                                                    <Label className="text-xs">Icon</Label>
-                                                                    <Input
+                                                                <div className="space-y-2 col-span-3 lg:col-span-1">
+                                                                    <Label>Icon</Label>
+                                                                    <IconSelector
                                                                         value={link.icon}
-                                                                        onChange={(e) => {
+                                                                        onChange={(val) => {
                                                                             const newLinks = [...data.hero.socialLinks]
-                                                                            newLinks[idx].icon = e.target.value
+                                                                            newLinks[idx].icon = val
                                                                             setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
                                                                         }}
-                                                                        className="bg-zinc-800 border-zinc-700"
                                                                     />
                                                                 </div>
-                                                                <Button
-                                                                    variant="destructive"
-                                                                    size="icon"
-                                                                    onClick={() => {
-                                                                        openConfirm({
-                                                                            title: "Delete Social Link",
-                                                                            message: "Remove this social link from your portfolio?",
-                                                                            type: "delete",
-                                                                            onConfirm: () => {
-                                                                                const newLinks = data.hero.socialLinks.filter((_, i) => i !== idx)
-                                                                                setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
-                                                                            }
-                                                                        })
-                                                                    }}
-                                                                >
-                                                                    <Trash2 className="w-4 h-4" />
-                                                                </Button>
+                                                                <div className="pt-2">
+                                                                    <Button
+                                                                        variant="destructive"
+                                                                        size="icon"
+                                                                        className="w-full h-10"
+                                                                        onClick={() => {
+                                                                            openConfirm({
+                                                                                title: "Remove Link",
+                                                                                message: "Remove this social media link?",
+                                                                                type: "delete",
+                                                                                onConfirm: () => {
+                                                                                    const newLinks = data.hero.socialLinks.filter((_, i) => i !== idx)
+                                                                                    setData({ ...data, hero: { ...data.hero, socialLinks: newLinks } })
+                                                                                }
+                                                                            })
+                                                                        }}
+                                                                    >
+                                                                        <Trash2 className="w-4 h-4" />
+                                                                    </Button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     ))}
@@ -552,7 +785,9 @@ export default function AdminDashboard() {
                                                             period: "2024 - Present",
                                                             location: "Remote",
                                                             description: ["Did awesome things"],
-                                                            current: true
+                                                            current: true,
+                                                            isBusiness: false,
+                                                            isProjectBased: false
                                                         }
                                                         setData({ ...data, experience: [newExp, ...data.experience] })
                                                     }
@@ -563,6 +798,7 @@ export default function AdminDashboard() {
                                         </Button>
                                     </div>
 
+                                    {/* Map experience directly in current order (Sorting happens only on save) */}
                                     {data.experience.map((exp, idx) => (
                                         <Card key={idx} className="border-zinc-800 bg-zinc-900 hover:border-zinc-700 transition-colors">
                                             <CardHeader className="flex flex-row items-start justify-between">
@@ -616,6 +852,78 @@ export default function AdminDashboard() {
                                                         />
                                                     </div>
                                                 </div>
+                                                <div className="grid md:grid-cols-2 gap-4">
+                                                    <div className="space-y-2">
+                                                        <Label>Period</Label>
+                                                        <Input
+                                                            value={exp.period}
+                                                            onChange={(e) => {
+                                                                const newExp = [...data.experience]
+                                                                newExp[idx].period = e.target.value
+                                                                setData({ ...data, experience: newExp })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700"
+                                                            placeholder="e.g. 2024 - Present"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label>Location</Label>
+                                                        <Input
+                                                            value={exp.location}
+                                                            onChange={(e) => {
+                                                                const newExp = [...data.experience]
+                                                                newExp[idx].location = e.target.value
+                                                                setData({ ...data, experience: newExp })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700"
+                                                            placeholder="e.g. Remote or Cairo, Egypt"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-wrap gap-4 items-center p-3 bg-zinc-800/30 rounded-lg border border-zinc-800">
+                                                    <div className="flex items-center space-x-2">
+                                                        <input
+                                                            type="checkbox"
+                                                            id={`current-${idx}`}
+                                                            checked={exp.current}
+                                                            onChange={(e) => {
+                                                                const newExp = [...data.experience]
+                                                                newExp[idx].current = e.target.checked
+                                                                setData({ ...data, experience: newExp })
+                                                            }}
+                                                            className="w-4 h-4 rounded border-zinc-700 bg-zinc-800 text-primary focus:ring-primary"
+                                                        />
+                                                        <Label htmlFor={`current-${idx}`} className="cursor-pointer">Current Position</Label>
+                                                    </div>
+                                                    <div className="flex items-center space-x-2">
+                                                        <input
+                                                            type="checkbox"
+                                                            id={`business-${idx}`}
+                                                            checked={exp.isBusiness}
+                                                            onChange={(e) => {
+                                                                const newExp = [...data.experience]
+                                                                newExp[idx].isBusiness = e.target.checked
+                                                                setData({ ...data, experience: newExp })
+                                                            }}
+                                                            className="w-4 h-4 rounded border-zinc-700 bg-zinc-800 text-primary focus:ring-primary"
+                                                        />
+                                                        <Label htmlFor={`business-${idx}`} className="cursor-pointer">Is Business (CEO/Founder)</Label>
+                                                    </div>
+                                                    <div className="flex items-center space-x-2">
+                                                        <input
+                                                            type="checkbox"
+                                                            id={`project-${idx}`}
+                                                            checked={exp.isProjectBased}
+                                                            onChange={(e) => {
+                                                                const newExp = [...data.experience]
+                                                                newExp[idx].isProjectBased = e.target.checked
+                                                                setData({ ...data, experience: newExp })
+                                                            }}
+                                                            className="w-4 h-4 rounded border-zinc-700 bg-zinc-800 text-primary focus:ring-primary"
+                                                        />
+                                                        <Label htmlFor={`project-${idx}`} className="cursor-pointer">Project Based</Label>
+                                                    </div>
+                                                </div>
                                                 <div className="space-y-2">
                                                     <Label>Responsibilities (One per line)</Label>
                                                     <Textarea
@@ -654,9 +962,10 @@ export default function AdminDashboard() {
                                                             id: Date.now(),
                                                             title: "New Project",
                                                             category: "Web Development",
-                                                            description: "Short description",
-                                                            longDescription: "Detailed description",
+                                                            description: "One-sentence short description",
+                                                            longDescription: "Detailed multi-paragraph description",
                                                             technologies: ["React"],
+                                                            layoutSections: ["Home", "About"],
                                                             features: ["Responsive design"],
                                                             icon: "Zap",
                                                             color: "from-blue-500 to-indigo-600",
@@ -715,29 +1024,64 @@ export default function AdminDashboard() {
                                                             className="bg-zinc-800 border-zinc-700"
                                                         />
                                                     </div>
+                                                    <div className="space-y-2">
+                                                        <Label>Category</Label>
+                                                        <Input
+                                                            value={project.category}
+                                                            onChange={(e) => {
+                                                                const newProj = [...data.projects]
+                                                                newProj[idx].category = e.target.value
+                                                                setData({ ...data, projects: newProj })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label>Short Description</Label>
+                                                        <Input
+                                                            value={project.description}
+                                                            onChange={(e) => {
+                                                                const newProj = [...data.projects]
+                                                                newProj[idx].description = e.target.value
+                                                                setData({ ...data, projects: newProj })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label>Long Description</Label>
+                                                        <Textarea
+                                                            value={project.longDescription}
+                                                            onChange={(e) => {
+                                                                const newProj = [...data.projects]
+                                                                newProj[idx].longDescription = e.target.value
+                                                                setData({ ...data, projects: newProj })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700 min-h-[120px]"
+                                                        />
+                                                    </div>
                                                     <div className="grid grid-cols-2 gap-3">
                                                         <div className="space-y-2">
                                                             <Label>Status</Label>
-                                                            <Input
+                                                            <StatusSelector
                                                                 value={project.status}
-                                                                onChange={(e) => {
+                                                                onChange={(val) => {
                                                                     const newProj = [...data.projects]
-                                                                    newProj[idx].status = e.target.value
+                                                                    newProj[idx].status = val
                                                                     setData({ ...data, projects: newProj })
                                                                 }}
-                                                                className="bg-zinc-800 border-zinc-700"
+                                                                options={["Completed", "In Progress", "Beta"]}
                                                             />
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <Label>Icon (Lucide name)</Label>
-                                                            <Input
+                                                            <Label>Icon</Label>
+                                                            <IconSelector
                                                                 value={project.icon}
-                                                                onChange={(e) => {
+                                                                onChange={(val) => {
                                                                     const newProj = [...data.projects]
-                                                                    newProj[idx].icon = e.target.value
+                                                                    newProj[idx].icon = val
                                                                     setData({ ...data, projects: newProj })
                                                                 }}
-                                                                className="bg-zinc-800 border-zinc-700"
                                                             />
                                                         </div>
                                                     </div>
@@ -754,6 +1098,19 @@ export default function AdminDashboard() {
                                                         />
                                                     </div>
                                                     <div className="space-y-2">
+                                                        <Label>Layout Sections (One per line)</Label>
+                                                        <Textarea
+                                                            value={(project.layoutSections || []).join("\n")}
+                                                            onChange={(e) => {
+                                                                const newProj = [...data.projects]
+                                                                newProj[idx].layoutSections = e.target.value.split("\n")
+                                                                setData({ ...data, projects: newProj })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700 h-20"
+                                                            placeholder="Home&#10;Dashboard&#10;Settings"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
                                                         <Label>Features (One per line)</Label>
                                                         <Textarea
                                                             value={project.features.join("\n")}
@@ -767,15 +1124,14 @@ export default function AdminDashboard() {
                                                     </div>
                                                     <div className="grid grid-cols-2 gap-3">
                                                         <div className="space-y-2">
-                                                            <Label>Demo URL</Label>
-                                                            <Input
-                                                                value={project.demoUrl}
-                                                                onChange={(e) => {
+                                                            <Label>Color Preset</Label>
+                                                            <ColorSelector
+                                                                value={project.color}
+                                                                onChange={(val) => {
                                                                     const newProj = [...data.projects]
-                                                                    newProj[idx].demoUrl = e.target.value
+                                                                    newProj[idx].color = val
                                                                     setData({ ...data, projects: newProj })
                                                                 }}
-                                                                className="bg-zinc-800 border-zinc-700"
                                                             />
                                                         </div>
                                                         <div className="space-y-2">
@@ -792,7 +1148,17 @@ export default function AdminDashboard() {
                                                         </div>
                                                     </div>
                                                     <div className="space-y-2">
-                                                        <Label>Images (One per line)</Label>
+                                                        <div className="flex items-center justify-between">
+                                                            <Label>Images (One per line)</Label>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="h-7 text-[10px] text-primary hover:text-primary/80"
+                                                                onClick={() => setAssetContext({ isOpen: true, type: "project", id: project.id })}
+                                                            >
+                                                                <ImageIcon className="w-3 h-3 mr-1" /> Open Browser
+                                                            </Button>
+                                                        </div>
                                                         <Textarea
                                                             value={project.images.join("\n")}
                                                             onChange={(e) => {
@@ -800,9 +1166,10 @@ export default function AdminDashboard() {
                                                                 newProj[idx].images = e.target.value.split("\n")
                                                                 setData({ ...data, projects: newProj })
                                                             }}
-                                                            className="bg-zinc-800 border-zinc-700 h-20"
-                                                            placeholder="/img/project-1.png"
+                                                            className="bg-zinc-800 border-zinc-700 h-20 font-mono text-xs"
+                                                            placeholder="/img/your-folder/image.png"
                                                         />
+                                                        <p className="text-[10px] text-zinc-500 italic">Tip: Copy paths from public/img folder.</p>
                                                     </div>
                                                 </CardContent>
                                                 <CardFooter className="pt-0 flex gap-2">
@@ -831,41 +1198,51 @@ export default function AdminDashboard() {
                                         </CardHeader>
                                         <CardContent className="space-y-6">
                                             <div className="grid gap-4">
-                                                {data.about.highlights.map((h, hIdx) => (
-                                                    <div key={hIdx} className="p-4 bg-zinc-800/30 rounded-lg border border-zinc-800 space-y-4">
+                                                {data.about.highlights.map((highlight, idx) => (
+                                                    <div key={idx} className="p-4 bg-zinc-800/30 rounded-lg border border-zinc-800 space-y-4">
                                                         <div className="grid grid-cols-2 gap-4">
                                                             <div className="space-y-2">
                                                                 <Label>Title</Label>
                                                                 <Input
-                                                                    value={h.title}
+                                                                    value={highlight.title}
                                                                     onChange={(e) => {
                                                                         const newH = [...data.about.highlights]
-                                                                        newH[hIdx].title = e.target.value
+                                                                        newH[idx].title = e.target.value
                                                                         setData({ ...data, about: { ...data.about, highlights: newH } })
                                                                     }}
                                                                     className="bg-zinc-800 border-zinc-700"
                                                                 />
                                                             </div>
                                                             <div className="space-y-2">
-                                                                <Label>Icon</Label>
-                                                                <Input
-                                                                    value={h.icon}
-                                                                    onChange={(e) => {
-                                                                        const newH = [...data.about.highlights]
-                                                                        newH[hIdx].icon = e.target.value
-                                                                        setData({ ...data, about: { ...data.about, highlights: newH } })
+                                                                <Label className="text-xs">Icon</Label>
+                                                                <IconSelector
+                                                                    value={highlight.icon}
+                                                                    onChange={(val) => {
+                                                                        const newHighlights = [...data.about.highlights]
+                                                                        newHighlights[idx].icon = val
+                                                                        setData({ ...data, about: { ...data.about, highlights: newHighlights } })
                                                                     }}
-                                                                    className="bg-zinc-800 border-zinc-700"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-2">
+                                                                <Label className="text-xs">Color Selector</Label>
+                                                                <ColorSelector
+                                                                    value={highlight.color}
+                                                                    onChange={(val) => {
+                                                                        const newHighlights = [...data.about.highlights]
+                                                                        newHighlights[idx].color = val
+                                                                        setData({ ...data, about: { ...data.about, highlights: newHighlights } })
+                                                                    }}
                                                                 />
                                                             </div>
                                                         </div>
                                                         <div className="space-y-2">
                                                             <Label>Description</Label>
                                                             <Input
-                                                                value={h.description}
+                                                                value={highlight.description}
                                                                 onChange={(e) => {
                                                                     const newH = [...data.about.highlights]
-                                                                    newH[hIdx].description = e.target.value
+                                                                    newH[idx].description = e.target.value
                                                                     setData({ ...data, about: { ...data.about, highlights: newH } })
                                                                 }}
                                                                 className="bg-zinc-800 border-zinc-700"
@@ -905,6 +1282,17 @@ export default function AdminDashboard() {
                                                                 setData({ ...data, about: { ...data.about, stats: newS } })
                                                             }}
                                                             className="bg-zinc-800 border-zinc-700 h-8"
+                                                        />
+                                                        <Label className="text-xs">Color Class</Label>
+                                                        <Input
+                                                            value={stat.color}
+                                                            onChange={(e) => {
+                                                                const newS = [...data.about.stats]
+                                                                newS[sIdx].color = e.target.value
+                                                                setData({ ...data, about: { ...data.about, stats: newS } })
+                                                            }}
+                                                            className="bg-zinc-800 border-zinc-700 h-8 text-[10px]"
+                                                            placeholder="text-blue-500"
                                                         />
                                                     </div>
                                                 ))}
@@ -957,6 +1345,151 @@ export default function AdminDashboard() {
                 config={confirm}
                 onClose={() => setConfirm({ ...confirm, isOpen: false })}
             />
+
+            {/* ASSETS DIALOG */}
+            <AnimatePresence>
+                {assetContext.isOpen && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden shadow-2xl flex flex-col"
+                        >
+                            <div className="p-6 border-b border-zinc-800 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
+                                        <ImageIcon className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-white">Asset Browser</h3>
+                                        <p className="text-sm text-zinc-400">Select an image from your public/img folder.</p>
+                                    </div>
+                                </div>
+                                <Button variant="ghost" size="icon" onClick={() => setAssetContext({ ...assetContext, isOpen: false })}>
+                                    <X className="w-5 h-5" />
+                                </Button>
+                            </div>
+
+                            <div className="p-4 bg-zinc-950/50 border-b border-zinc-800 flex gap-2">
+                                <div className="relative flex-grow">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                                    <Input
+                                        placeholder="Search assets..."
+                                        className="pl-10 bg-zinc-800 border-zinc-700"
+                                        value={searchAsset}
+                                        onChange={(e) => setSearchAsset(e.target.value)}
+                                    />
+                                </div>
+                                <div className="relative">
+                                    <Button size="sm" className="h-full">
+                                        <Plus className="w-4 h-4 mr-2" /> Upload New
+                                        <input
+                                            type="file"
+                                            className="absolute inset-0 opacity-0 cursor-pointer"
+                                            accept="image/*"
+                                            onChange={async (e) => {
+                                                const file = e.target.files?.[0]
+                                                if (file) {
+                                                    const reader = new FileReader()
+                                                    reader.onload = async (event) => {
+                                                        const base64 = event.target?.result as string
+                                                        // Call server action to upload
+                                                        const { uploadImage } = await import("@/lib/actions/portfolio")
+                                                        const result = await uploadImage(base64, file.name)
+                                                        if (result.success) {
+                                                            toast.success("Image uploaded successfully!")
+
+                                                            // Auto-add to context if needed
+                                                            if (assetContext.type === "project" && assetContext.id !== undefined && result.path) {
+                                                                const projectIdx = data.projects.findIndex(p => p.id === assetContext.id);
+                                                                if (projectIdx !== -1) {
+                                                                    const newProjects = [...data.projects];
+                                                                    newProjects[projectIdx].images = [...newProjects[projectIdx].images, result.path];
+                                                                    setData({ ...data, projects: newProjects });
+                                                                    toast.success("Added to project automatically!");
+                                                                }
+                                                            }
+
+                                                            // Refresh assets
+                                                            const { getImageAssets } = await import("@/lib/actions/portfolio")
+                                                            const assets = await getImageAssets()
+                                                            setImageAssets(assets)
+                                                        } else {
+                                                            toast.error("Upload failed: " + result.error)
+                                                        }
+                                                    }
+                                                    reader.readAsDataURL(file)
+                                                }
+                                            }}
+                                        />
+                                    </Button>
+                                </div>
+                            </div>
+
+                            <div className="flex-grow overflow-y-auto p-4 custom-scrollbar">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                    {imageAssets
+                                        .filter(path => path.toLowerCase().includes(searchAsset.toLowerCase()))
+                                        .map((assetPath, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => {
+                                                    // Copy to clipboard always
+                                                    navigator.clipboard.writeText(assetPath)
+                                                    toast.success("Path copied to clipboard!")
+
+                                                    // Auto-add if in context
+                                                    if (assetContext.type === "project" && assetContext.id !== undefined) {
+                                                        const projectIdx = data.projects.findIndex(p => p.id === assetContext.id);
+                                                        if (projectIdx !== -1) {
+                                                            const newProjects = [...data.projects];
+                                                            // Avoid duplicates
+                                                            if (!newProjects[projectIdx].images.includes(assetPath)) {
+                                                                newProjects[projectIdx].images = [...newProjects[projectIdx].images, assetPath];
+                                                                setData({ ...data, projects: newProjects });
+                                                                toast.success("Added to project!");
+                                                            } else {
+                                                                toast.error("Already in project!");
+                                                            }
+                                                        }
+                                                    }
+                                                }}
+                                                className="group relative aspect-square rounded-xl bg-zinc-800 border border-zinc-700 overflow-hidden hover:border-primary/50 transition-all text-left"
+                                            >
+                                                <img
+                                                    src={assetPath}
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-60 group-hover:opacity-100"
+                                                    alt="Asset"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-2 flex flex-col justify-end">
+                                                    <p className="text-[10px] text-white truncate font-mono">{assetPath}</p>
+                                                    <div className="flex items-center gap-1 text-[8px] text-primary font-bold mt-1 uppercase">
+                                                        <Copy className="w-2 h-2" /> Click to copy
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        ))}
+                                    {imageAssets.length === 0 && (
+                                        <div className="col-span-full py-12 text-center text-zinc-500">
+                                            No images found in public/img
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="p-4 border-t border-zinc-800 bg-zinc-950/50 flex justify-between items-center">
+                                <p className="text-xs text-zinc-500">
+                                    Showing {imageAssets.filter(path => path.includes(searchAsset)).length} assets
+                                </p>
+                                <Button size="sm" variant="secondary" onClick={() => setAssetContext({ ...assetContext, isOpen: false })}>
+                                    Close Browser
+                                </Button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     )
 }
