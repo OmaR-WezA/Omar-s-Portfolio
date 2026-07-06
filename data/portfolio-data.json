@@ -222,6 +222,96 @@
       "status": "Completed"
     },
     {
+      "id": 8,
+      "title": "Pandemic Pulse",
+      "category": "Web Application",
+      "description": "AI-powered hospital crisis intelligence platform providing real-time situational awareness.",
+      "longDescription": "Pandemic Pulse is an AI-powered hospital crisis intelligence platform designed to provide real-time situational awareness and autonomous tactical planning. Developed as a production-ready enterprise solution, it integrates live environmental telemetry with a proprietary risk engine and generative AI to ensure healthcare systems remain proactively prepared for surge emergencies.",
+      "technologies": [
+        "Next.js",
+        "Laravel",
+        "MySQL",
+        "Tailwind CSS",
+        "TypeScript",
+        "Gemini AI"
+      ],
+      "layoutSections": [
+        "Global Dashboard",
+        "Hospital Profile",
+        "Risk Engine",
+        "Tactical Center",
+        "Reports Board",
+        "Environment Monitor",
+        "PDF Print View"
+      ],
+      "features": [
+        "Autonomous AI Strategy Generation: Integrates Google Gemini AI to autonomously draft multi-tiered hospital preparedness plans the moment critical risk thresholds are crossed.",
+        "Proprietary Risk Engine: Dynamically evaluates live AQI, weather elements, and disease outbreaks to calculate a unified 0-100 severity score with trend forecasting.",
+        "Real-Time Data Telemetry: Seamlessly ingests multiple live external APIs (AQICN, OpenWeather) to provide a constant stream of localized environmental intelligence.",
+        "Tactical Command UI: A dark-mode, glassmorphism-inspired dashboard designed for rapid data comprehension and high-stakes decision-making by administrators.",
+        "Robust Backend Architecture: Scalable Laravel REST API managing complex state handling, automated background scheduling (CRON), and isolated AI orchestration.",
+        "Dynamic PDF Reporting Engine: Converts complex Markdown-based AI intelligence briefings into branded, highly-formatted PDF documents strictly on the fly.",
+        "Role-Based Access Control (RBAC): Secure token-based authentication system strictly isolating data permissions between System Admins, Hospital Admins, and Analysts.",
+        "Relational Database Design: Highly structured MySQL architecture tracing hospital capacities, historical telemetry, and audit logs with enterprise-grade data integrity."
+      ],
+      "icon": "Activity",
+      "color": "from-rose-500/80 to-rose-500/40",
+      "images": [
+        "/img/pandemic-pulse/global_dashboard_1779641229065.png",
+        "/img/pandemic-pulse/RiskEingin.jpeg",
+        "/img/pandemic-pulse/hospital_success_1779576595740.png",
+        "/img/pandemic-pulse/AI-Report.jpeg",
+        "/img/pandemic-pulse/hospital_list_edited_1779576667140.png",
+        "/img/pandemic-pulse/Air_Quality.jpeg",
+        "/img/pandemic-pulse/SystemUsers.jpeg"
+      ],
+      "demoUrl": "#",
+      "githubUrl": "#",
+      "status": "Completed"
+    },
+    {
+      "id": 9,
+      "title": "Yamas Egypt",
+      "category": "Corporate Website",
+      "description": "Premium bilingual agricultural corporate platform for international wholesale and export.",
+      "longDescription": "Yamas Egypt is a premium bilingual (English/Arabic) agricultural corporate platform engineered for a leading date production and agricultural enterprise. Developed as a high-performance static application, it serves as the digital front for international wholesale and export operations. The platform merges an elegant, nature-inspired visual identity with robust engineering, featuring an intelligent product inquiry system and seamless RTL/LTR layout handling optimized specifically for shared cloud infrastructure.",
+      "technologies": [
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "EmailJS",
+        "Apache",
+        "Git",
+        "CI/CD"
+      ],
+      "layoutSections": [
+        "Bilingual Homepage",
+        "Product Catalog",
+        "About Infrastructure",
+        "Smart Contact System"
+      ],
+      "features": [
+        "Bilingual Architecture (RTL/LTR): Engineered a flawless bilingual experience supporting both English and Arabic. Implemented advanced semantic HTML techniques and Tailwind directives to ensure typographical integrity and layout stability during rapid context switches.",
+        "Zero-Server Inquiry Pipeline: Developed an automated, secure quotation system using EmailJS integrated directly with Hostinger's SMTP protocols. Intercepts product-specific inquiries and routes them instantly to corporate emails without the overhead of a dedicated backend.",
+        "Intelligent Parameter Routing: Designed a highly responsive product selection system that utilizes smart URL state management. It seamlessly captures deep-linked product inquiries, smoothly scrolls users to the contact interface, and silently clears URL parameters to maintain pristine browser history.",
+        "Static Export Optimization: Architected strictly for speed and deployment resilience using Next.js Static Export. Configured robust Apache server .htaccess directives to eliminate server-side File vs. Folder mismatch conflicts, ensuring instantaneous Time-to-Interactive (TTI).",
+        "Premium Visual Storytelling: Designed an enterprise-grade UI using deep forest greens and earth tones, coupled with large-scale unoptimized sharp imagery and subtle micro-animations to convey agricultural prestige and manufacturing scale.",
+        "SEO & Export Infrastructure: Structured with strong semantic HTML priorities and robust metadata handling. The platform is intentionally tailored to rank effectively and attract global wholesale clients looking for premium Egyptian agricultural exports."
+      ],
+      "icon": "Leaf",
+      "color": "from-emerald-600/80 to-emerald-600/40",
+      "images": [
+        "/img/yamas-eg/home-en.jpeg",
+        "/img/yamas-eg/home-ar.jpeg",
+        "/img/yamas-eg/about-ar.jpeg",
+        "/img/yamas-eg/product-ar.jpeg",
+        "/img/yamas-eg/contact-ar.jpeg"
+      ],
+      "demoUrl": "https://yamas-eg.com",
+      "githubUrl": "#",
+      "status": "Completed"
+    },
+    {
       "id": 1,
       "title": "Berimbolo Security Website",
       "category": "Web Development",
@@ -378,11 +468,12 @@
       "icon": "Leaf",
       "color": "from-red-500/80 to-red-500/40",
       "images": [
-        "/img/agri-img/control.png",
-        "/img/agri-img/home.png",
-        "/img/agri-img/about.png",
-        "/img/agri-img/gallery.png",
-        "/img/agri-img/services.png"
+        "/img/agri-img/home.jpeg",
+        "/img/agri-img/home-ex.jpeg",
+        "/img/agri-img/about.jpeg",
+        "/img/agri-img/services.jpeg",
+        "/img/agri-img/gallery.jpeg",
+        "/img/agri-img/dashboard.jpeg"
       ],
       "demoUrl": "https://agritechz-tech.vercel.app/",
       "githubUrl": "",

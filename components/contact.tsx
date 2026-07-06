@@ -227,7 +227,7 @@ const Contact = () => {
               <Card className="border border-primary/20 bg-primary/5">
                 <CardContent className="p-6">
                   <div className="flex items-center">
-                    <div className="w-3 h-3 bg-primary rounded-full mr-3 animate-pulse" />
+                    <div className="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse" />
                     <div>
                       <p className="font-semibold text-primary/80">Available for Projects</p>
                       <p className="text-sm text-muted-foreground">Currently accepting new opportunities</p>
@@ -341,8 +341,8 @@ const Contact = () => {
             </Card>
           </motion.div>
         </div>
-      </div>
-    </section>
+      </div >
+    </section >
   )
 }
 

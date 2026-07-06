@@ -149,7 +149,7 @@ const Hero = () => {
             <Button
               size="lg"
               onClick={() => document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" })}
-              className="h-16 px-10 text-xl font-bold rounded-2xl bg-primary hover:bg-primary/90 text-white shadow-xl shadow-primary/20 transition-all duration-300 hover:-translate-y-1"
+              className="h-16 px-10 text-xl font-bold rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl shadow-primary/20 transition-all duration-300 hover:-translate-y-1"
             >
               Start Exploration
             </Button>
@@ -188,7 +188,7 @@ const Hero = () => {
       >
         <ArrowDown className="w-8 h-8" />
       </motion.button>
-    </section>
+    </section >
   )
 }
 
